@@ -1,24 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RMW-frontend
+- Ride my way application frontend.
+
+## Tools used:
+* [Node.js®](https://nodejs.org/en): JavaScript runtime environment.
+* [Npm](https://docs.npmjs.com/about-npm): Node.js package manager.
+* [Next.js](https://nextjs.org): The React Framework that enables you to create high-quality web applications.
+* [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app): Next.js project bootstrapping tool.
+
 
 ## Getting Started
+### Setup.
+* Clone the repository [Here](https://github.com/Xerrex/rmw-frontend).
+  ```
+  git clone repo-url
+  ```
 
-First, run the development server:
+* Change into cloned folder.
+  ```
+  cd rmw-rmw-frontend
+  ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* Install packages
+  ```bash
+  npm install
+  ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Running & Viewing the app.
+* First, run the development server:
+  ```bash
+  npm run dev
+  ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
 
