@@ -15,7 +15,7 @@ export default function Home() {
             <div className="flex justify-center gap-10 w-full">
               <Link href="/auth/sign_in" className="flex justify-start gap-2 bg-indigo-500 hover:bg-indigo-600 
                 py-2 px-6 rounded text-white text-lg font-semibold">
-                <span>Login</span> 
+                <span>SignIn</span> 
                 <span className="order-first font-bold"><LockOpenIcon className="w-5 md:w-6"/></span>
               </Link>
 
