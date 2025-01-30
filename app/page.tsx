@@ -10,21 +10,20 @@ export default function Home() {
           
           <div className="text-center lg:w-2/3 w-full">
             <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Ride My Way</h1>
-            <p className="mb-8 leading-relaxed">Share a ride if you are going the same direction.</p>
+            <p className="mb-8 mx-auto text-base">Share a ride if you are going the same direction.</p>
 
             <div className="flex justify-center gap-10 w-full">
               <Link href="/auth/sign_in" className="flex justify-start gap-2 bg-indigo-500 hover:bg-indigo-600 
-                py-2 px-6 text-white text-lg font-semibold">
+                py-2 px-6 rounded text-white text-lg font-semibold">
                 <span>Login</span> 
                 <span className="order-first font-bold"><LockOpenIcon className="w-5 md:w-6"/></span>
               </Link>
 
               <Link href="/auth/sign_up" className="flex justify-start gap-2 bg-gray-100 hover:bg-gray-200 
-                py-2 px-6 text-gray-700 text-lg font-semibold">
+                py-2 px-6 rounded text-gray-700 text-lg font-semibold">
                 <span>SignUp</span>  
                 <span className="font-bold"><ArrowRightIcon className="w-5 md:w-6"/></span>
               </Link>
-
             </div>
           </div>
 
