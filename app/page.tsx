@@ -13,13 +13,13 @@ export default function Home() {
             <p className="mb-8 mx-auto text-base">Share a ride if you are going the same direction.</p>
 
             <div className="flex justify-center gap-10 w-full">
-              <Link href="/auth/sign_in" className="flex justify-start gap-2 bg-indigo-500 hover:bg-indigo-600 
+              <Link href="/auth/sign_in" className="flex justify-start gap-2 bg-primaryColor hover:bg-primaryColorHover
                 py-2 px-6 rounded text-white text-lg font-semibold">
                 <span>SignIn</span> 
                 <span className="order-first font-bold"><LockOpenIcon className="w-5 md:w-6"/></span>
               </Link>
 
-              <Link href="/auth/sign_up" className="flex justify-start gap-2 bg-gray-100 hover:bg-gray-200 
+              <Link href="/auth/sign_up" className="flex justify-start gap-2 bg-secondaryColor hover:bg-secondaryColorHover
                 py-2 px-6 rounded text-gray-700 text-lg font-semibold">
                 <span>SignUp</span>  
                 <span className="font-bold"><ArrowRightIcon className="w-5 md:w-6"/></span>

@@ -2,7 +2,7 @@ import React from 'react';
 import SignInForm from '@/app/ui/sign-in-form';
 
 
-function SignIn() {
+function Page() {
   return (
     <div className="py-2 px-2 flex flex-col">
       <h1 className="text-gray-900 text-xl font-medium title-font mb-5 mx-auto">Sign In</h1>
@@ -11,4 +11,4 @@ function SignIn() {
   )
 }
 
-export default SignIn;
+export default Page;
