@@ -1,7 +1,10 @@
 import React from 'react';
+import { OverViewCards } from '../ui/cards';
 
 export default function DashBoard() {
   return (
-    <div className="bg-black">Dashboard</div>
+    <main>
+      <OverViewCards/>
+    </main>
   );
 }
