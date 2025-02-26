@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 
 
 export async function authSignUp(formdata: FormData){
-  /** handles the user registration */
+  /** Handle user registration */
   console.log("Sign Up data", formdata);
   revalidatePath("/auth/sign_up");
   redirect("/auth/sign_in");
@@ -12,9 +12,15 @@ export async function authSignUp(formdata: FormData){
 
 
 export async function authSignIn(formData: FormData){
-  /** Handles user sign up */
+  /** Handle user sign up */
 
   console.log("Sign In data", formData);
   revalidatePath("/auth/sign_in");
-  redirect("/dashboard")
+  redirect("/dashboard");
+}
+
+
+export async function logout(){
+  /** Handle user logout */
+  console.log("Logging out the user");
 }
