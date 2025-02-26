@@ -6,9 +6,9 @@ export default function AuthLayout({children,}: Readonly<{children: React.ReactN
     return (
         <div className="flex flex-col">
           <div className="mt-2 ml-2">
-            <Link href="/" className="flex w-40 justify-start gap-2 bg-primaryColor hover:bg-primaryColorHover
+            <Link href="/" className="flex w-40 items-center justify-start gap-2 bg-primaryColorAlt hover:bg-primaryColorHoverAlt
               py-2 px-6 rounded text-white text-sm font-semibold">
-              <span>Go back</span>
+              <span>Home</span>
               <span className="order-first font-bold"><ArrowLeftIcon className="w-5 md:w-6"/> </span>
             </Link>
           </div>

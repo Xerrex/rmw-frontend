@@ -23,4 +23,6 @@ export async function authSignIn(formData: FormData){
 export async function logout(){
   /** Handle user logout */
   console.log("Logging out the user");
+  //TODO: remove auth 
+  redirect("/auth/sign_in");
 }

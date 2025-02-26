@@ -1,5 +1,7 @@
+'use client'
 import React from 'react';
 import Link from 'next/link';
+import { logout } from '@/app/lib/actions_auth';
 import { RocketLaunchIcon, ArrowPathIcon, RectangleStackIcon } from '@heroicons/react/24/outline';
 
 const links= [
@@ -9,6 +11,8 @@ const links= [
 ]
 
 function Sidenav() {
+
+
   return (
     <div className="bg-primaryColorAlt w-64 mr-2 p-2 h-screen overflow-hidden text-white flex flex-col">
       <div className="p-4 text-lg font-semibold border-b border-white">Ride my way</div>
@@ -29,7 +33,8 @@ function Sidenav() {
       
         {/* Logout Button */}
         <div className="p-4 border-t border-gray-700">
-          <button className="w-full p-2 bg-red-700 text-white rounded hover:bg-red-900 transition duration-200">
+          <button className="w-full p-2 bg-red-700 text-white rounded hover:bg-red-900 transition duration-200"
+            onClick={()=>logout()}>
             Logout
           </button>
         </div>
