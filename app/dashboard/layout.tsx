@@ -12,7 +12,7 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
     { id: 1, text: 'You have a new message', read: false },
     { id: 2, text: 'Your order has been shipped', read: true },
     { id: 3, text: 'Reminder: Meeting at 3 PM', read: false },
-    { id: 3, text: 'Reminder: Meeting at 10 PM', read: false },
+    { id: 4, text: 'Reminder: Meeting at 10 PM', read: false },
   ];
 
 
