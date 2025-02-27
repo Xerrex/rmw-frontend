@@ -1,12 +1,23 @@
+"use client"
 import React from "react";
 import { BellIcon } from '@heroicons/react/24/outline';
 
-function Navbar() {
-  const unreadNotifications = 3;
+type PropTypes ={
+  unreadNotifications: number;
+  isNotificationOpen: boolean;
+  setIsNotificationOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function Navbar({unreadNotifications, isNotificationOpen, setIsNotificationOpen}:PropTypes) {
+
+  const toggleNotifications = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+
   return (
     <div className="bg-white shadow-sm p-4 flex items-center justify-between mt-2 mx-auto w-[98%]">
       <h1 className="text-xl font-semibold text-black">Dashboard</h1>
-      <div className="relative">
+      <div className="relative" onClick={toggleNotifications}>
         <BellIcon className="h-6 w-6 text-gray-700 cursor-pointer" />
         {/* Notification Badge */}
         {unreadNotifications > 0 && (
