@@ -2,12 +2,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { logout } from '@/app/lib/actions_auth';
-import { RocketLaunchIcon, ArrowPathIcon, RectangleStackIcon } from '@heroicons/react/24/outline';
+import { RocketLaunchIcon, ArrowPathIcon, ChartPieIcon } from '@heroicons/react/24/outline';
 
 const links= [
-  { name: 'All rides', href: '#', icon: RectangleStackIcon },
-  { name: 'Rides offered', href: '#', icon: RocketLaunchIcon },
-  { name: 'Ride requests', href: '#', icon: ArrowPathIcon },
+  { name: 'Home', href: '/dashboard', icon:  ChartPieIcon },
+  { name: 'Rides offered', href: '/dashboard/rides_offered', icon: RocketLaunchIcon },
+  { name: 'Ride requests', href: '/dashboard/ride_requests', icon: ArrowPathIcon },
 ]
 
 function Sidenav() {
@@ -18,7 +18,7 @@ function Sidenav() {
       <div className="p-4 text-lg font-semibold border-b border-white">Ride my way</div>
       
         {/* Menu Items */}
-        <div id="menu" className="flex-1 mt-10 p-2">
+        <div id="menu" className="flex-1 mt-20 p-2">
             {links.map((link)=>{
               const LinkIcon = link.icon;
               return(
