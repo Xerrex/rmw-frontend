@@ -1,20 +1,17 @@
-import { RocketLaunchIcon, ArrowPathIcon, RectangleStackIcon } from '@heroicons/react/24/outline';
+import { RocketLaunchIcon, ArrowDownOnSquareIcon, RectangleStackIcon,
+  ArrowPathIcon, XMarkIcon} from '@heroicons/react/24/outline';
+import { CardType } from '@/app/lib/definitions';
 
 const iconMap = {
   allRides: RectangleStackIcon,
   ridesOffered: RocketLaunchIcon,
-  rideRequests: ArrowPathIcon
+  ridesTaken: ArrowDownOnSquareIcon,
+  requestsPending: ArrowPathIcon,
+  requestsRejected: XMarkIcon
 }
 
 
-type CardType = {
-  title: string;
-  value: number | string; 
-  type: 'allRides' | 'ridesOffered' | 'rideRequests';
-}
-
-
-export function Card({title,value,type,}: CardType){
+export function Card({title, value, type}: CardType){
   const Icon = iconMap[type];
   return (
     <div className="bg-white shadow-sm rounded-lg p-2 mx-auto w-60">
@@ -30,18 +27,16 @@ export function Card({title,value,type,}: CardType){
 }
 
 
-export function OverViewCards(){
+type CardsPropType = {
+  cardsData: CardType[]
+}
 
-  const ridesData = [
-    {title: "All Rides", value: 20, type:"allRides"},
-    {title: "Rides Offered", value: 10, type:"ridesOffered"},
-    {title: "Ride Requests", value: 10, type:"rideRequests"}
-  ]
+export function OverViewCards({cardsData}: CardsPropType){
   
   return (
     <div className="flex">
-      {ridesData.map((rideData)=>(
-        <Card key={rideData.type} title={rideData.title} value={rideData.value} type={rideData.type} />
+      {cardsData.map((cardData)=>(
+        <Card key={cardData.type} title={cardData.title} value={cardData.value} type={cardData.type} />
       ))}
     </div>
   )
