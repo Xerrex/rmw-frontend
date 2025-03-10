@@ -1,7 +1,9 @@
+"use client";
+
 import React from 'react';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import RidesSearch from '../ui/RidesSearch';
-import { RideCard } from '../ui/cards';
+import { RideCard } from '../ui/Cards';
 import { getRides } from '@/app/lib/data';
 
 
@@ -25,4 +27,4 @@ async function page() {
   )
 }
 
-export default page
+export default page;

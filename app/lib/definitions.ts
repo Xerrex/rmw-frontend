@@ -30,3 +30,13 @@ export type Ride = {
   updated_at: string;
   owner_id: number;
 }
+
+
+// Define the props interface for the Modal component: Interfaces are more extendible
+export interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+

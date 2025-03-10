@@ -45,7 +45,7 @@ export function OverViewCards({cardsData}: CardsPropType){
 
 
 type RideCardPropType = {
-  Ride: Ride
+  Ride: Ride;
 }
 
 export function RideCard({Ride}: RideCardPropType){
@@ -87,7 +87,7 @@ export function RideCard({Ride}: RideCardPropType){
 
       <div className="flex flex-col space-y-2">
         <button className="bg-primaryColorAlt hover:bg-primaryColorHoverAlt text-white p-4 
-          shadow-lg  transition duration-200">Join</button>
+          shadow-lg  transition duration-200" onClick={()=>join()}>Join</button>
         <button className="bg-primaryColor hover:bg-primaryColorHover text-white p-4 
           shadow-lg  transition duration-200">View Request</button>
       </div>

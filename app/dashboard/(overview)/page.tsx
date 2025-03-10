@@ -1,5 +1,5 @@
 import React from 'react';
-import { OverViewCards } from '../ui/cards';
+import { OverViewCards } from '../ui/Cards';
 import RidesChart from '../ui/rides_chart';
 import { getRidesDataTotals, getRidesDataLast12months } from '@/app/lib/data';
 

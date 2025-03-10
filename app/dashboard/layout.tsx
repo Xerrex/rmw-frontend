@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react";
-import Sidenav from "./ui/sidenav";
-import Navbar from "./ui/navbar";
+import Sidenav from "./ui/Sidenav";
+import Navbar from "./ui/Navbar";
 
 
 export default function DashboardLayout({children}: {children: React.ReactNode}){
