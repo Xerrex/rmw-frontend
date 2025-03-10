@@ -54,10 +54,10 @@ export function RideCard({Ride}: RideCardPropType){
   const [end_date, end_time] = Ride.depart_time.split(" ");
 
   return (
-    <div className="bg-white rounded-lg p-2 m-2 w-1/4">
+    <div className="bg-white text-black rounded-lg p-2 m-1 w-96">
       <div className="flex">
         <Image src="/Car.png" alt={"car picture"} className="mr-4" width={128} height={64}/>
-        <div className="flex flex-col p-6 bg-gray-300 rounded-lg">
+        <div className="flex grow flex-col p-6 bg-gray-300 rounded-lg">
           <p className="text-lg font-semibold">{Ride.town_starting}</p>
           <p className="mx-auto text-lg text-gray-600">to</p>
           <p className="text-lg font-semibold">{Ride.town_ending}</p>
@@ -81,8 +81,8 @@ export function RideCard({Ride}: RideCardPropType){
       </div>
 
       <div className="flex flex-col mt-2">
-        <p>{Ride.seats} seats available</p>
-        <p>Vehicle reg: {Ride.vehicle_plate}</p>
+        <p>Seats: {Ride.seats}/{Ride.seats} (available)</p>
+        <p>Registration: {Ride.vehicle_plate}</p>
       </div>
 
       <div className="flex flex-col space-y-2">
