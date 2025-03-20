@@ -1,4 +1,32 @@
 import moment from "moment";
+import { Ride, User } from "./definitions";
+
+
+const createTestUsers = (users: number): User[]=>{
+  /** Generates users
+   * 
+   * returns a list of users
+  */
+
+  const createdUsers = [];
+
+  for (let i=1; i<=users; i++){
+    const newUser = { 
+      "id": i,
+      "uuid": "6c723bcc-b8d3-4a25-9c92-75f01fe8c189",
+      "first_name": `John${i}`,
+      "last_name": `Doe${i}`,
+      "email": `john${i}doe${i}@rmw.ride`
+    }
+    createdUsers.push(newUser)
+  }
+
+  return createdUsers;
+}
+
+
+export const TEST_USERS = createTestUsers(10);
+
 
 export const ridesOverViewData = [
   { month: 'Dec', 
@@ -40,7 +68,7 @@ export const ridesOverViewData = [
 ]
 
 
-export const generateRides = (rides: number)=>{
+export const generateRides = (rides: number, ownerId: number): Ride[]=>{
   /** Generates rides
    * 
    * Returns a list of rides 
@@ -55,7 +83,7 @@ export const generateRides = (rides: number)=>{
 
     const newRide = {
       "id": i,
-      "uuid": `0426e05b-e321-40fb-ae08-19fed9d0c${i}`,
+      "uuid": `0426e${i}b-e321-40fb${i}-ae08-19fed9d0c${i}`,
       "vehicle_plate": `KDS ${i.toString().slice(0, 3).padStart(3, "0")}D`,
       "seats": 4,
       "town_starting": `Town${i}`,
@@ -64,10 +92,11 @@ export const generateRides = (rides: number)=>{
       "end_time": `${end_time}`,
       "created_at": `${moment().format("DD-MM-YYYY HH:mm")}`,
       "updated_at": `${moment().format("DD-MM-YYYY HH:mm")}`,
-      "owner_id": Math.floor(Math.random() * rides)
+      "owner_id": ownerId
     }
 
     ridesData.push(newRide);
   }
   return ridesData;
 }
+

@@ -46,9 +46,16 @@ export function OverViewCards({cardsData}: CardsPropType){
 
 type RideCardPropType = {
   Ride: Ride;
+  ride_type: "owner"| "passenger";
 }
 
 export function RideCard({Ride}: RideCardPropType){
+  /**Ride Card
+   * 
+   * Show View Request if have requested to join ride
+   * Show View Requests if owner of the ride.
+   * Show Join if not owner and have not requested to join ride.
+   */
 
   const [dpt_date, dpt_time] = Ride.depart_time.split(" ");
   const [end_date, end_time] = Ride.depart_time.split(" ");
@@ -87,9 +94,13 @@ export function RideCard({Ride}: RideCardPropType){
 
       <div className="flex flex-col space-y-2">
         <button className="bg-primaryColorAlt hover:bg-primaryColorHoverAlt text-white p-4 
-          shadow-lg  transition duration-200" onClick={()=>join()}>Join</button>
+          shadow-lg  transition duration-200 rounded-sm">Join</button>
+        
         <button className="bg-primaryColor hover:bg-primaryColorHover text-white p-4 
-          shadow-lg  transition duration-200">View Request</button>
+          shadow-lg  transition duration-200 rounded-sm">View Request(For requester)</button>
+        
+        <button className="bg-primaryColor hover:bg-primaryColorHover text-white p-4 
+          shadow-lg  transition duration-200  rounded-sm">View Requests(For Owner)</button>
       </div>
     </div>
   )
