@@ -1,5 +1,6 @@
 import moment from "moment";
-import { Ride, User } from "./definitions";
+import { Ride, User, RideRequest } from "./definitions";
+import { randomUUID } from "crypto";
 
 
 const createTestUsers = (users: number): User[]=>{
@@ -68,7 +69,7 @@ export const ridesOverViewData = [
 ]
 
 
-export const generateRides = (rides: number, ownerId: number): Ride[]=>{
+const generateRides = (rides: number, ownerId: number): Ride[]=>{
   /** Generates rides
    * 
    * Returns a list of rides 
@@ -100,3 +101,58 @@ export const generateRides = (rides: number, ownerId: number): Ride[]=>{
   return ridesData;
 }
 
+
+const createTestRides = (): Ride[]=>{
+  /** Create test rides
+   * Creates rides for every user.
+   */
+
+  const rides:Ride[] = [];
+
+  TEST_USERS.forEach((user)=>{
+    const userRides = generateRides(5, user.id);
+    rides.push(...userRides);
+  })
+
+  return rides;
+}
+
+
+export const TEST_RIDES = createTestRides();
+
+
+const createRideRequests = (): RideRequest[]=>{
+  /**Create Ride request for every ride 
+   * 
+  */
+ const statuses = ["Accepted", "Rejected", "Pending"]
+
+  const rideRequests: RideRequest[] = [];
+
+  TEST_RIDES.forEach((ride, rideIndex)=>{
+    TEST_USERS.forEach((user, userIndex)=>{
+
+      if (user.id !== ride.owner_id){
+        const newRequest = {
+          id: rideRequests.length + 1,
+          uuid: randomUUID,
+          seats: 1,
+          stop: `${user.first_name}${rideIndex}${userIndex}Town`,
+          status: statuses[Math.floor(Math.random() * statuses.length)],
+          created_at: `${moment().format("DD-MM-YYYY HH:mm")}`,
+          updated_at: `${moment().format("DD-MM-YYYY HH:mm")}`,
+          ride_id: ride.id,
+          ride_requester_id: user.id
+        }
+
+        rideRequests.push(newRequest);
+      }
+     
+    })
+  })
+
+  return rideRequests;
+}
+
+
+export const TEST_RIDE_REQUESTS = createRideRequests();

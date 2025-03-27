@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { RocketLaunchIcon, ArrowDownOnSquareIcon, RectangleStackIcon,
-  ArrowPathIcon, XMarkIcon, CalendarIcon, ClockIcon} from '@heroicons/react/24/outline';
-import { CardType, Ride } from '@/app/lib/definitions';
+  ArrowPathIcon, XMarkIcon, CalendarIcon, ClockIcon, UsersIcon} from '@heroicons/react/24/outline';
+import { CardType, Ride, RideRequest } from '@/app/lib/definitions';
 
 const iconMap = {
   allRides: RectangleStackIcon,
@@ -46,7 +46,7 @@ export function OverViewCards({cardsData}: CardsPropType){
 
 type RideCardPropType = {
   Ride: Ride;
-  ride_type: "owner"| "passenger";
+  // ride_type: "owner"| "passenger"; //TODO: coming soon
 }
 
 export function RideCard({Ride}: RideCardPropType){
@@ -101,6 +101,64 @@ export function RideCard({Ride}: RideCardPropType){
         
         <button className="bg-primaryColor hover:bg-primaryColorHover text-white p-4 
           shadow-lg  transition duration-200  rounded-sm">View Requests(For Owner)</button>
+      </div>
+    </div>
+  )
+}
+
+
+type RideRequestProps ={
+  RideRequest: RideRequest;
+}
+
+export function RideRequestCard({RideRequest}: RideRequestProps){
+  /**Ride Card
+   * 
+   * Show View Request if have requested to join ride
+   * Show View Requests if owner of the ride.
+   * Show Join if not owner and have not requested to join ride.
+   */
+
+  const [createdAt_date, createdAt_time] = RideRequest.created_at.split(" ");
+  const [updatedAt_date, updatedAt_time] = RideRequest.updated_at.split(" ");
+
+  return (
+    <div className="bg-white text-black rounded-lg p-2 m-1 w-96">
+      <div className="flex">
+        <Image src="/Car.png" alt={"car picture"} className="mr-4" width={128} height={64}/>
+        <div className="flex grow flex-col p-6 bg-gray-300 rounded-lg">
+          <p className="text-lg font-semibold">{RideRequest.stop}</p>
+        </div>
+      </div>
+
+      <div className="flex flex-col bg-gray-300 mt-2 rounded-lg p-2">
+        <div className="flex items-center">
+          <UsersIcon className="h-5 w-5 mr-2"/>
+          <span className="mr-2">{RideRequest.seats}</span>
+        </div>
+
+        <div className="flex items-center">
+          <CalendarIcon className="h-5 w-5 mr-2"/>
+          <span className="mr-2">{createdAt_date}</span>
+          <ClockIcon className="h-5 w-5 mr-1"/>
+          <span>{createdAt_time} (created at)</span>
+        </div>
+
+        <div className="flex items-center">
+          <CalendarIcon className="h-5 w-5 mr-2"/>
+          <span className="mr-2">{updatedAt_date}</span>
+          <ClockIcon className="h-5 w-5 mr-1"/>
+          <span>{updatedAt_time} (last updated at)</span>
+        </div>
+
+      </div>
+
+      <div className="flex flex-col space-y-2">
+        <button className="bg-primaryColorAlt hover:bg-primaryColorHoverAlt text-white p-4 
+          shadow-lg  transition duration-200 rounded-sm">Reject</button>
+        
+        <button className="bg-primaryColor hover:bg-primaryColorHover text-white p-4 
+          shadow-lg  transition duration-200 rounded-sm">Accept</button>
       </div>
     </div>
   )

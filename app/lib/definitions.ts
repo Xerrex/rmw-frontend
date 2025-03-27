@@ -1,3 +1,40 @@
+export type User = {
+  "id": number,
+  "uuid": string,
+  "first_name": string,
+  "last_name": string,
+  "email": string
+}
+
+
+export type Ride = {
+  id: number;
+  uuid: string;
+  vehicle_plate: string;
+  seats: number;
+  town_starting: string;
+  town_ending: string;
+  depart_time: string;
+  end_time: string;
+  created_at: string;
+  updated_at: string;
+  owner_id: number;
+}
+
+
+export type RideRequest = {
+  id: number;
+  uuid: string;
+  seats: number;
+  stop: string;
+  status: "Accepted"  | "Rejected" | "Pending"
+  created_at: string;
+  updated_at: string;
+  ride_id: number;
+  ride_requester_id: number;
+}
+
+
 export type CardType = {
   title: string;
   value: number | string; 
@@ -17,28 +54,6 @@ export type MonthlyRidesData = {
 }
 
 
-export type Ride = {
-  id: number;
-  uuid: string;
-  vehicle_plate: string;
-  seats: number;
-  town_starting: string;
-  town_ending: string;
-  depart_time: string;
-  end_time: string;
-  created_at: string;
-  updated_at: string;
-  owner_id: number;
-}
-
-
-export type User = {
-  "id": number,
-  "uuid": string,
-  "first_name": string,
-  "last_name": string,
-  "email": string
-}
 
 
 // Define the props interface for the Modal component: Interfaces are more extendible

@@ -1,4 +1,4 @@
-import { ridesOverViewData, generateRides } from "./placeholder_data";
+import { ridesOverViewData, TEST_RIDES, TEST_RIDE_REQUESTS} from "./placeholder_data";
 
 
 export async function getRidesDataTotals(){
@@ -13,6 +13,7 @@ export async function getRidesDataTotals(){
     return ridesDataTotal;
 }
 
+
 export async function getRidesDataLast12months(){
     // Gets rides data for the dashboard overview
     return ridesOverViewData;
@@ -21,5 +22,12 @@ export async function getRidesDataLast12months(){
 
 export async function getRides(){
     // Get a list of rides
-    return generateRides(30);
+    return TEST_RIDES;
 }
+
+
+export async function getRideRequests(){
+    // Get a list of ride requests
+    return TEST_RIDE_REQUESTS;
+}
+

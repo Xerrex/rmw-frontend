@@ -22,7 +22,7 @@ function Page() {
     <div className="flex flex-col flex-1">
       <RidesSearch/>
 
-      <div className="flex flex-wrap w-full h-[780px] overflow-y-auto hide-scrollbar">
+      <div className="flex flex-wrap w-full h-[780px] overflow-y-auto hide-scrollbar justify-center">
         {rides.length < 0 && <p className="mx-auto text-black">There are no rides yet</p>}
         {rides.map((ride)=>(<RideCard key={ride.uuid} Ride={ride}/>))}
       </div>
