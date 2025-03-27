@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { RocketLaunchIcon, ArrowDownOnSquareIcon, RectangleStackIcon,
-  ArrowPathIcon, XMarkIcon, CalendarIcon, ClockIcon, UsersIcon} from '@heroicons/react/24/outline';
+  ArrowPathIcon, XMarkIcon, CalendarIcon, ClockIcon, UsersIcon, MapPinIcon} from '@heroicons/react/24/outline';
 import { CardType, Ride, RideRequest } from '@/app/lib/definitions';
 
 const iconMap = {
@@ -126,8 +126,9 @@ export function RideRequestCard({RideRequest}: RideRequestProps){
     <div className="bg-white text-black rounded-lg p-2 m-1 w-96">
       <div className="flex">
         <Image src="/RideRequest.png" alt={"car picture"} className="mr-4" width={128} height={64}/>
-        <div className="flex grow p-4 my-auto justify-center bg-gray-300 rounded-lg">
-          <p className="text-lg font-semibold">{RideRequest.stop}</p>
+        <div className="flex grow items-center justify-center bg-gray-300 rounded-lg">
+          <MapPinIcon className="h-5 w-5 mr-2"/>
+          <span className="text-lg font-semibold">{RideRequest.stop}</span>
         </div>
       </div>
 

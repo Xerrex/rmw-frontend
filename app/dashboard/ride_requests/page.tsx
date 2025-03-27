@@ -18,6 +18,9 @@ function Page() {
 
   return (
     <div className="flex flex-col flex-1">
+      <div className="flex w-full text-black mb-4">
+        Ride request filter
+      </div>
       <div className="flex flex-wrap w-full h-[780px] overflow-y-auto">
         {ridesRequests.length < 0 && <p className="mx-auto text-black">There are no rides requests yet</p>}
         {ridesRequests.map((rideRequest)=>(<RideRequestCard key={rideRequest.uuid} RideRequest={rideRequest}/>))}
