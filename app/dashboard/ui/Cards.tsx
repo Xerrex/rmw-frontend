@@ -125,15 +125,16 @@ export function RideRequestCard({RideRequest}: RideRequestProps){
   return (
     <div className="bg-white text-black rounded-lg p-2 m-1 w-96">
       <div className="flex">
-        <Image src="/Car.png" alt={"car picture"} className="mr-4" width={128} height={64}/>
-        <div className="flex grow flex-col p-6 bg-gray-300 rounded-lg">
+        <Image src="/RideRequest.png" alt={"car picture"} className="mr-4" width={128} height={64}/>
+        <div className="flex grow p-4 my-auto justify-center bg-gray-300 rounded-lg">
           <p className="text-lg font-semibold">{RideRequest.stop}</p>
         </div>
       </div>
 
-      <div className="flex flex-col bg-gray-300 mt-2 rounded-lg p-2">
+      <div className="flex flex-col mt-2 rounded-lg p-2">
         <div className="flex items-center">
-          <UsersIcon className="h-5 w-5 mr-2"/>
+          <UsersIcon className="h-5 w-5 mr-2 font-bold"/>
+          <span className="mr-2">Seats</span>
           <span className="mr-2">{RideRequest.seats}</span>
         </div>
 
