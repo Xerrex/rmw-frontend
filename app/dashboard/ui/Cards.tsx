@@ -122,6 +122,10 @@ export function RideRequestCard({RideRequest}: RideRequestProps){
   const [createdAt_date, createdAt_time] = RideRequest.created_at.split(" ");
   const [updatedAt_date, updatedAt_time] = RideRequest.updated_at.split(" ");
 
+  const handleStatusChange = (status: string)=>{
+    console.log(`HandleStatusChange for ride request ${RideRequest.uuid}`, status);
+  }
+
   return (
     <div className="bg-white text-black rounded-lg p-2 m-1 w-96">
       <div className="flex">
@@ -140,6 +144,12 @@ export function RideRequestCard({RideRequest}: RideRequestProps){
         </div>
 
         <div className="flex items-center">
+          <UsersIcon className="h-5 w-5 mr-2 font-bold"/>
+          <span className="mr-2">Status</span>
+          <span className="mr-2">{RideRequest.status}</span>
+        </div>
+
+        <div className="flex items-center">
           <CalendarIcon className="h-5 w-5 mr-2"/>
           <span className="mr-2">{createdAt_date}</span>
           <ClockIcon className="h-5 w-5 mr-1"/>
@@ -154,14 +164,26 @@ export function RideRequestCard({RideRequest}: RideRequestProps){
         </div>
 
       </div>
+      {RideRequest.status ==="Pending" && (
+        <div className="flex flex-col space-y-2">
+         <button className="bg-primaryColorAlt hover:bg-primaryColorHoverAlt text-white p-4 
+           shadow-lg  transition duration-200 rounded-sm" onClick={()=>handleStatusChange("Rejected")}>Reject</button>
+         
+         <button className="bg-primaryColor hover:bg-primaryColorHover text-white p-4 
+           shadow-lg  transition duration-200 rounded-sm" onClick={()=>handleStatusChange("Accepted")}>Accept</button>
+       </div>
+      )}
 
-      <div className="flex flex-col space-y-2">
-        <button className="bg-primaryColorAlt hover:bg-primaryColorHoverAlt text-white p-4 
-          shadow-lg  transition duration-200 rounded-sm">Reject</button>
-        
-        <button className="bg-primaryColor hover:bg-primaryColorHover text-white p-4 
-          shadow-lg  transition duration-200 rounded-sm">Accept</button>
-      </div>
+      {RideRequest.status === "Accepted" && (
+        <button className="w-full bg-primaryColorAlt hover:bg-primaryColorHoverAlt text-white p-4 
+        shadow-lg  transition duration-200 rounded-sm" onClick={()=>handleStatusChange("Rejected")}>Reject</button>
+      )}
+
+      {RideRequest.status === "Rejected" && (
+       <button className="w-full bg-primaryColor hover:bg-primaryColorHover text-white p-4 
+       shadow-lg  transition duration-200 rounded-sm" onClick={()=>handleStatusChange("Accepted")}>Accept</button>
+      )}
+     
     </div>
   )
 }

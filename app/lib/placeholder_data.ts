@@ -135,7 +135,7 @@ const createRideRequests = (): RideRequest[]=>{
       if (user.id !== ride.owner_id){
         const newRequest = {
           id: rideRequests.length + 1,
-          uuid: randomUUID,
+          uuid: `${ride.uuid}-rr${rideRequests.length+1}`,
           seats: 1,
           stop: `${user.first_name}${rideIndex}${userIndex}Town`,
           status: statuses[Math.floor(Math.random() * statuses.length)],
