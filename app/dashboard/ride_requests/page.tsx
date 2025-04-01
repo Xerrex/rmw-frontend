@@ -24,7 +24,7 @@ function Page() {
       </div>
       <div className="flex flex-wrap w-full h-[780px] overflow-y-auto">
         {ridesRequests.length < 0 && <p className="mx-auto text-black">There are no rides requests yet</p>}
-        {ridesRequests.map((rideRequest)=>(<RideRequestCard key={rideRequest.uuid} RideRequest={rideRequest}/>))}
+        {ridesRequests.map((rideRequest)=>(<RideRequestCard key={rideRequest.id} RideRequest={rideRequest}/>))}
       </div>
 
       <div className="text-black fixed bottom-20 right-4">
