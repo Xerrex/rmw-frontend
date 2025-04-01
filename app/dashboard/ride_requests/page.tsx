@@ -12,7 +12,7 @@ function Page() {
   useEffect(()=>{
     getRideRequests()
     .then((data)=>{
-      console.log("data", data);
+      // console.log("data", data);
       setRidesRequests(data)
     })
   },[])
