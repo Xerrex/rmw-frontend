@@ -6,7 +6,7 @@ import useAlertsContext from '../Contexts/useAlertsContextHook';
 
 
 function Home() {
-  const [rmwAlerts, removeAlert] = useAlertsContext();
+  const {rmwAlerts, removeAlert} = useAlertsContext();
   const [showSignUp, setShowSignUp] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
 
@@ -22,7 +22,10 @@ function Home() {
 
   return (
     <div className="min-h-screen body-font text-gray-600 dark:text-white">
-      {rmwAlerts && <AlertsView rmwAlerts={rmwAlerts} removeAlert={removeAlert}/>} 
+      <div className="flex justify-center-safe">
+         <AlertsView rmwAlerts={rmwAlerts} removeAlert={removeAlert}/>
+      </div>
+     
       <div className="flex flex-col items-center justify-center h-screen">
         <div className="text-center lg:w-2/3 w-full">
           <h1 className="title-font sm:text-8xl text-4xl mb-4 font-medium text-gray-900 

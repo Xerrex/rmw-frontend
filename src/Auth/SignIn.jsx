@@ -14,7 +14,7 @@ function SignIn({isOpen, setIsOpen}) {
   const [disableCancel, setDisableCancel] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
-  const [addAlert, removeAlert] = useAlertsContext();
+  const {addAlert} = useAlertsContext();
 
 
   const handleOnOk = ()=>{

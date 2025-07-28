@@ -3,13 +3,15 @@ import { Alert } from 'antd';
 
 function AlertsView({rmwAlerts, removeAlert}) {
   
-
   return (
-    <div className="flex flex-col w-3/4">
-      {rmwAlerts.length>1 && rmwAlerts.map((alert, index)=>{
+    <div className="flex flex-col p-2 md:w-1/5 sm:w-3/4 absolute top-0">
+      {rmwAlerts.length>0 && rmwAlerts.map((alert, index)=>{
         return (
-          <Alert type={alert.type} showIcon message={alert.message} 
-            description={alert.description} closable onClose={()=>removeAlert(index)}/>)
+          <div key={index} className="p-1">
+            <Alert type={alert.type} showIcon message={alert.message} 
+            description={alert.description} closable onClose={()=>removeAlert(index)}/>
+          </div>
+          )
       })}
     </div>
   )
