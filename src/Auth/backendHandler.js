@@ -29,6 +29,7 @@ export async function signUpHandler(formValues){
 export async function signInHandler(formValues){
   /**  Handle the sign in call to the backend */
   // {email: 'sasas', password: 'sasasa'}
+    console.log("Form values", formValues); // TODO: remove
 
   const url = "/auth/signin";
   const reqData = {

@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import SignUp from '../Auth/SignUp';
 import SignIn from '../Auth/SignIn';
-import AlertsView from '../Contexts/AlertsView';
-import useAlertsContext from '../Contexts/useAlertsContextHook';
+import AlertsView from '../Contexts/AlertContext/AlertsView';
+import useAlertsContext from '../Contexts/AlertContext/useAlertsContextHook';
 
 
 function Home() {

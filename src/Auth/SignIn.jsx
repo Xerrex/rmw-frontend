@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Modal, Form, Input } from 'antd';
-import useAlertsContext from '../Contexts/useAlertsContextHook';
+import useAlertsContext from '../Contexts/AlertContext/useAlertsContextHook';
+import useAuthContext from '../Contexts/AuthContext/useAuthContextHook';
 import { signInHandler } from './backendHandler';
 import { alertTypes } from '../utils/definitions';
 
@@ -14,6 +15,7 @@ const layout = {
 function SignIn({isOpen, setIsOpen}) {
   const [form] = Form.useForm();
   const {addAlert} = useAlertsContext();
+  const {setUserDetails} = useAuthContext();
   const [disableOk, setDisableOk] = useState(false);
   const [disableCancel, setDisableCancel] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -21,7 +23,7 @@ function SignIn({isOpen, setIsOpen}) {
 
 
   const handleSubmit = (values)=>{
-    console.log("Form values", values); // TODO: remove
+  
 
     setDisableCancel(true) // NOTE: Disable the Cancel button
     setDisableOk(true) // NOTE: Disable the ok button
@@ -31,6 +33,8 @@ function SignIn({isOpen, setIsOpen}) {
     signInHandler(values)
     .then((resData)=>{
       if(resData !== null){
+        setUserDetails({...resData.details, token:resData.token});
+        // TODO: Consider sving token to localStorage
         addAlert(alertTypes.success, "Sign in", "Sign in into you account was successful");
         form.resetFields();
         setIsOpen(false)
