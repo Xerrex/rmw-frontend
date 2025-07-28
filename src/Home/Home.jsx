@@ -32,11 +32,11 @@ function Home() {
             dark:text-white">Ride my way</h1>
           <p className="mb-8 leading-relaxed sm:text-3xl text-lg">Share a ride if you are going the same direction.</p>
           <div className="flex justify-center">
-            <button className="inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none
-             hover:bg-gray-500 rounded text-lg" onClick={()=>handleSignUpClick()}>Sign upx</button>
-
-            <button className="ml-4 inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none
-             hover:bg-indigo-800 rounded text-lg" onClick={()=>handleSignInClick()}>Sign in</button>
+            <button className="mx-2 inline-flex text-gray-700 bg-gray-100 hover:bg-gray-500 border-0 py-2 px-4 focus:outline-none
+            rounded text-lg" onClick={()=>handleSignInClick()}>Sign in</button>
+             
+            <button className="mx-2 inline-flex text-white bg-indigo-500 hover:bg-indigo-800 border-0 py-2 px-4 focus:outline-none
+            rounded text-lg" onClick={()=>handleSignUpClick()}>Create an account</button>
           </div>
         </div>
       </div>

@@ -2,19 +2,20 @@ import { useState } from 'react';
 import { Modal, Form, Input } from 'antd';
 import useAlertsContext from '../Contexts/useAlertsContextHook';
 
-// Centered vertically
 
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 };
 
+
 function SignIn({isOpen, setIsOpen}) {
+  const [form] = Form.useForm();
+  const {addAlert} = useAlertsContext();
   const [disableOk, setDisableOk] = useState(false);
   const [disableCancel, setDisableCancel] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [form] = Form.useForm();
-  const {addAlert} = useAlertsContext();
+  
 
 
   const handleOnOk = ()=>{
@@ -64,7 +65,7 @@ function SignIn({isOpen, setIsOpen}) {
     onOk={() => handleOnOk()} onCancel={() => handleOnCancel()}
     okText="SignIn"  cancelText="Cancel" okButtonProps={{disabled: disableOk}}
     cancelButtonProps={{ disabled: disableCancel }} confirmLoading={confirmLoading}>
-    <Form {...layout} form={form} name="SignIn" style={{ maxWidth: 600 }}>
+    <Form {...layout} form={form} name="signin" style={{ maxWidth: 600 }}>
       
       <Form.Item name="email" label="Email" rules={[{ required: true, message: "Please Provide a valid Email"}]}>
         <Input />
