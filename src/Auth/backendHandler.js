@@ -3,7 +3,7 @@ import { axiosWithoutAuth } from "../utils/rmwAxios";
 
 export async function signUpHandler(formValues){
   /** Handle the sign up call with the backend */
-  // {"firstName": "sasass","lastName": "asasas","email": "asasas","password": "sasasas"}
+
   const url = "/auth/signup";
   const reqData = {
     "first_name": formValues.firstName,
@@ -37,7 +37,11 @@ export async function signInHandler(formValues){
   }
 
   const res = await axiosWithoutAuth.post(url, reqData);
-  const resData = await res.data
-
-  return resData;
+  if(res.status === 200){
+    const resData = await res.data;
+    console.log("Sign in response", resData); // TODO: remove
+    return resData;
+  }else{
+    return null;
+  }
 }
