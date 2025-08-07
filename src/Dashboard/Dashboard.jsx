@@ -1,13 +1,12 @@
 import {useState} from 'react';
 import { Outlet, useLocation } from 'react-router';
-import { Layout, Button } from 'antd';
-import {MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import AlertsView from '../Contexts/AlertContext/AlertsView';
 import useAlertsContext from '../Contexts/AlertContext/useAlertsContextHook';
 import useAuthContext from '../Contexts/AuthContext/useAuthContextHook';
+import { HeaderProvider } from './UI/Header/Context/HeaderProvider';
 import SignIn from '../Auth/SignIn';
 import Sidebar from './UI/Sidebar';
-import Header from './UI/Header';
+import Header from './UI/Header/Header';
 
 
 function Dashboard() {
@@ -40,10 +39,13 @@ function Dashboard() {
           <AlertsView rmwAlerts={rmwAlerts} removeAlert={removeAlert}/>
         </div>
 
-        <Header collapsed={collapsed} setCollapsed={setCollapsed}/>
-        
-        <Outlet />
+        <HeaderProvider>
+          <Header collapsed={collapsed} setCollapsed={setCollapsed}/>
 
+          <Outlet />
+          
+        </HeaderProvider>
+        
       </div>
        
       <SignIn isOpen={showSignIn} setIsOpen={setShowSignIn} navigateTo={location}/>
