@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import useHeaderContext from "../UI/Header/Context/useHeaderContext";
 
-function DashHome() {
+function DashboardHome() {
   const {setTitle} = useHeaderContext();
 
   useEffect(()=>{
@@ -13,4 +13,4 @@ function DashHome() {
   )
 }
 
-export default DashHome;
+export default DashboardHome;

@@ -18,7 +18,7 @@ function Sidebar({collapsed}) {
   return (
     <Sider style={styles} trigger={null} width={300} collapsible collapsed={collapsed} >
       <div className="p-4 text-white text-center">
-        <h1 className="text-xl font-bold">{collapsed ? 'Logo' : 'RMW'}</h1>
+        <h1 className="text-xl font-bold">{collapsed ? 'RMW' : 'RIDE MY WAY'}</h1>
       </div>
       <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}
         items={[

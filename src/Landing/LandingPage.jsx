@@ -5,7 +5,7 @@ import AlertsView from '../Contexts/AlertContext/AlertsView';
 import useAlertsContext from '../Contexts/AlertContext/useAlertsContextHook';
 
 
-function Home() {
+function LandingPage() {
   const {rmwAlerts, removeAlert} = useAlertsContext();
   const [showSignUp, setShowSignUp] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
@@ -47,4 +47,4 @@ function Home() {
   )
 }
 
-export default Home
+export default LandingPage;
