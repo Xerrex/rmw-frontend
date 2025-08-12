@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Layout, Menu } from "antd";
-import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { BarChartOutlined, UserOutlined, CarOutlined } from '@ant-design/icons';
 
 const { Sider} = Layout;
 const styles = {
@@ -12,9 +12,9 @@ const styles = {
 }
 
 const menuItems = [
-  {key: '1', icon: <UserOutlined />, label: 'Home',},
-  {key: '2', icon: <VideoCameraOutlined />, label: 'Rides',},
-  {key: '3', icon: <UploadOutlined />, label: 'Profile',},
+  {key: '1', icon: <BarChartOutlined />, label: 'Home',},
+  {key: '2', icon: <CarOutlined />, label: 'Rides',},
+  {key: '3', icon: <UserOutlined />, label: 'Profile',},
 ]
 
 

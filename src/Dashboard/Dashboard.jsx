@@ -12,7 +12,7 @@ import Header from './UI/Header/Header';
 function Dashboard() {
   const {rmwAlerts, removeAlert} = useAlertsContext();
   const location = useLocation();
-  const { userDetails }= useAuthContext();
+  // const { userDetails }= useAuthContext();
   const [showSignIn, setShowSignIn] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
