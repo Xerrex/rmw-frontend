@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Layout, Menu } from "antd";
 import { BarChartOutlined, UserOutlined, CarOutlined } from '@ant-design/icons';
+
 
 const { Sider} = Layout;
 const styles = {
@@ -12,23 +14,23 @@ const styles = {
 }
 
 const menuItems = [
-  {key: '1', icon: <BarChartOutlined />, label: 'Home',},
-  {key: '2', icon: <CarOutlined />, label: 'Rides',},
-  {key: '3', icon: <UserOutlined />, label: 'Profile',},
+  {key: '1', icon: <BarChartOutlined />, label: 'Home', path: '/dashboard/home',},
+  {key: '2', icon: <CarOutlined />, label: 'Rides', path: '/dashboard/rides',},
+  {key: '3', icon: <UserOutlined />, label: 'Profile', path: '/dashboard/profile',},
 ]
 
 
 function Sidebar({collapsed}) {
+  const navigate = useNavigate();
   const [current, setCurrent] = useState('1');
 
   const menuItemClicked = (e)=>{
     const itemKey = e.key;
     setCurrent(itemKey);
 
-    const clickedItem = menuItems.find((menuItem)=>{
-      return menuItem.key === itemKey;
-    })
-    console.log("clickedItem", clickedItem);
+    const clickedItem = menuItems.find((menuItem)=>menuItem.key === itemKey)
+    console.log("clickedItem", clickedItem); // TODO: Remove
+    navigate(clickedItem.path)
   }
 
   return (
