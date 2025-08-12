@@ -23,7 +23,8 @@ function DashboardHome() {
    
   })
   return (
-    <div className="p-1">
+    <div className="flex flex-col p-1">
+
       {/** Overview cards */}
       <div className="flex justify-evenly">
         {ridesDataTotal.map((ridesTotal)=>(
@@ -38,6 +39,17 @@ function DashboardHome() {
           </div>
         ))}
       </div>
+      
+      <div className="mt-4 flex justify-evenly">
+        {/** Graph */}
+        <div> rides</div>
+
+        {/** Recent requests as list */}
+        <div>Request list</div>
+      </div>
+      
+
+      
 
     </div>
   )
