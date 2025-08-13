@@ -16,7 +16,8 @@ const styles = {
 const menuItems = [
   {key: '1', icon: <BarChartOutlined />, label: 'Home', path: '/dashboard/home',},
   {key: '2', icon: <CarOutlined />, label: 'Rides', path: '/dashboard/rides',},
-  {key: '3', icon: <UserOutlined />, label: 'Profile', path: '/dashboard/profile',},
+  {key: '3', icon: <CarOutlined />, label: 'Requests', path: '/dashboard/requests',},
+  {key: '4', icon: <UserOutlined />, label: 'Profile', path: '/dashboard/profile',},
 ]
 
 

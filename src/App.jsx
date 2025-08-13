@@ -3,6 +3,7 @@ import LandingPage from "./Landing/LandingPage";
 import Dashboard from "./Dashboard/Dashboard";
 import DashboardHome from "./Dashboard/Home/DashHome";
 import Rides from "./Dashboard/Rides/Rides";
+import RideRequests from "./Dashboard/RideRequests/RideRequests";
 import Profile from "./Dashboard/Profile/Profile";
 
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="" element={<DashboardHome/>}/>  
         <Route path="home" element={<DashboardHome/>}/>
         <Route path="rides" element={<Rides/>}/>
+        <Route path="requests" element={<RideRequests/>}/>
         <Route path="profile" element={<Profile/>}/>
       </Route>
     </Routes>
