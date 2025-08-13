@@ -27,7 +27,8 @@ function Dashboard() {
 
 
   return (
-    <div className="min-h-screen body-font text-gray-600 dark:text-white flex">
+    <div className="min-h-screen body-font text-gray-600 dark:text-gray-200 bg-gray-50 
+      dark:bg-gray-900 transition-colors duration-200 flex">
        {/* sidebar */}
       <div className="p-2">
         <Sidebar collapsed={collapsed}/>

@@ -67,17 +67,17 @@ function SignIn({isOpen, setIsOpen, navigateTo}) {
       okText="SignIn"  cancelText="Cancel" okButtonProps={{disabled: disableOk}}
       cancelButtonProps={{ disabled: disableCancel }} confirmLoading={confirmLoading}>
     
-    <Form {...layout} form={form} name="signin" onFinish={handleSubmit} style={{ maxWidth: 600 }}>
-      <Form.Item name="email" label="Email" rules={[{ required: true, message: "Please Provide a valid Email"}]}>
-        <Input />
-      </Form.Item>
+      <Form {...layout} form={form} name="signin" onFinish={handleSubmit} style={{ maxWidth: 600 }}>
+        <Form.Item name="email" label="Email" rules={[{ required: true, message: "Please Provide a valid Email"}]}>
+          <Input/>
+        </Form.Item>
 
-      <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please Provide a password" }]}>
-        <Input.Password />
-      </Form.Item>
-    </Form>
-  </Modal>
-)
+        <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please Provide a password" }]}>
+          <Input.Password/>
+        </Form.Item>
+      </Form>
+    </Modal>
+  )
 }
 
 export default SignIn
