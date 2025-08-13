@@ -14,17 +14,20 @@ function Header({collapsed, setCollapsed}) {
   const {title} = useHeaderContext();
 
   return (
-  <header className="bg-white text-gray-600 body-font dark:text-white mb-2">
+  <header className="bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-200 body-font 
+      shadow-sm dark:shadow-gray-700/50 transition-colors duration-200 mb-2">
     <div className="w-full flex mx-auto p-5 flex-row items-center justify-between">
       <div className="mx-2 flex items-center">
-        <Button type="text" icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => setCollapsed(!collapsed)} />
-        <h1 className="text-black font-bold text-xl ml-5">{title}</h1>
+        <Button type="text" className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" 
+        icon={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>} onClick={() => setCollapsed(!collapsed)} />
+        <h1 className="text-black dark:text-white font-bold text-xl ml-5">{title}</h1>
       </div>
       
-      <div className='mr-2 text-black'>
-        <Dropdown menu={{ items }}>
-          <Space> <AlertOutlined /> <DownOutlined /> </Space>
+      <div className='mr-2 text-black dark:text-gray-300'>
+        <Dropdown menu={{ items }} overlayClassName="dark:bg-gray-700 dark:text-white">
+          <Space className="hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded"> 
+            <AlertOutlined className="dark:text-gray-300"/> 
+            <DownOutlined className="dark:text-gray-300"/> </Space>
         </Dropdown>
         
       </div>
