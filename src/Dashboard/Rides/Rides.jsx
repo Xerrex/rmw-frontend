@@ -26,7 +26,8 @@ function Rides() {
 
   
 
-  console.log("rides", rides);
+  console.log("rides", rides); // TODO:Remove
+
   return (
     <div className="flex flex-col">
       <Search placeholder={"Search rides"}/>

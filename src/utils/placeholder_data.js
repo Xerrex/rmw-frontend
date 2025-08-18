@@ -38,7 +38,7 @@ const generateUserRides = (numberOfRides, ownerId)=>{
     const depart_time = moment().add(60, "minutes").format("DD-MM-YYYY HH:mm");
     const end_time = moment().add(180, "minutes").format("DD-MM-YYYY HH:mm");
     const newRide = {
-      "id": `${r}_${ownerId}`,
+      "id": rides.length +1,
       "uuid": crypto.randomUUID(),
       "vehicle_plate": `KDT ${r.toString().slice(0, 3).padStart(3, "0")}F`,
       "seats": 4,
@@ -66,5 +66,34 @@ const createRides = (users, numberOfRides)=>{
   return rides;
 }
 
-export const TEST_RIDES = createRides(TEST_USERS, 5);
 
+export const TEST_RIDES = createRides(TEST_USERS, 2);
+
+
+const createRidesRequests = (users, rides)=>{
+  const statuses = ["Accepted", "Rejected", "Pending"];
+  const rideRequests = [];
+
+  rides.forEach((ride, rideIndex)=>{
+    users.forEach((user, userIndex)=>{
+      if(user.id !== ride.owner_id){
+        const newRequest = {
+          "id": rideRequests.length + 1,
+          "uuid": crypto.randomUUID(),
+          "seats": 1,
+          "stop": `${user.first_name}${rideIndex}${userIndex}Town`,
+          "status": statuses[Math.floor(Math.random() * statuses.length)],
+          "created_at": `${moment().format("DD-MM-YYYY HH:mm")}`,
+          "updated_at": `${moment().format("DD-MM-YYYY HH:mm")}`,
+          "ride_id": ride.id,
+          "ride_requester_id": user.id
+        }
+        rideRequests.push(newRequest);
+      }
+    })
+  })
+
+  return rideRequests;
+}
+
+export const TEST_RIDE_REQUESTS = createRidesRequests(TEST_USERS, TEST_RIDES);
