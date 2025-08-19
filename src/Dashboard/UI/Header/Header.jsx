@@ -30,7 +30,7 @@ function Header({collapsed, setCollapsed}) {
       <div className='mr-2 text-black dark:text-gray-300'>
         <Dropdown menu={{ items }} overlayClassName="dark:bg-gray-700 dark:text-white">
           <Space className="hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded">
-            <span className="text-white font-bold">{userDetails.first_name}</span>
+            {userDetails?.first_name && (<span className="text-white font-bold">{userDetails.first_name}</span>)}
             <AlertOutlined className="dark:text-gray-300"/> 
             <DownOutlined className="dark:text-gray-300"/> </Space>
         </Dropdown>

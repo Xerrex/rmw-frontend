@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from "react-router";
-import { FloatButton } from "antd";
+// import { useSearchParams } from "react-router";
+// import { FloatButton } from "antd";
 import useHeaderContext from '../UI/Header/Context/useHeaderContext';
 import Search from '../UI/Search';
 import { getRideRequests } from '../backendHandler';
@@ -9,7 +9,7 @@ import RideRequestCard from './RideRequestCard';
 
 function RideRequests() {
   const {setTitle} = useHeaderContext();
-  const [searchParams ] = useSearchParams();
+  // const [searchParams ] = useSearchParams();
   const [rideRequests, setRideRequests] = useState([]);
 
   
