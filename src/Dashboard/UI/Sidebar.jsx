@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Layout, Menu } from "antd";
-import { BarChartOutlined, UserOutlined, CarOutlined } from '@ant-design/icons';
+import { BarChartOutlined, UserOutlined, CarOutlined, LockOutlined } from '@ant-design/icons';
 
 
 const { Sider} = Layout;
@@ -34,6 +34,10 @@ function Sidebar({collapsed}) {
     navigate(clickedItem.path)
   }
 
+  const handleLogout = ()=>{
+    console.log("handle logout")
+  }
+
   return (
     <Sider style={styles} trigger={null} width={300} collapsible collapsed={collapsed} >
       <div className="p-4 text-white text-center">
@@ -41,6 +45,18 @@ function Sidebar({collapsed}) {
       </div>
       <Menu onClick={menuItemClicked} theme="dark" mode="inline" selectedKeys={[current]}
         items={menuItems}/>
+      
+      <div className="w-full text-white text-center absolute bottom-4">
+        {collapsed === false ? (
+          <button className="w-full bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 
+          dark:hover:bg-indigo-700 text-white p-4 shadow-lg  transition duration-200 
+            rounded-sm" onClick={()=>handleLogout()}><LockOutlined style={{fontSize:"15px", marginRight:"10px"}}/>Logout </button>
+          ):(
+          <button className="w-full bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 
+          dark:hover:bg-indigo-700 text-white p-4 shadow-lg  transition duration-200 
+            rounded-sm" onClick={()=>handleLogout()}><LockOutlined style={{fontSize:"20px"}}/></button>)}
+      </div>
+
     </Sider>
   )
 }
