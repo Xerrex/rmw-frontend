@@ -1,14 +1,22 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import SignUp from '../Auth/SignUp';
 import SignIn from '../Auth/SignIn';
-import AlertsView from '../Contexts/AlertContext/AlertsView';
-import useAlertsContext from '../Contexts/AlertContext/useAlertsContextHook';
+import AlertsView from '../AlertContext/AlertsView';
+import useAlertsContext from '../AlertContext/useAlertsContextHook';
+import { ENVIRONMENT_MODE } from '../utils/config';
+import { TEST_USERS } from '../utils/placeholder_data';
 
 
 function LandingPage() {
   const {rmwAlerts, removeAlert} = useAlertsContext();
   const [showSignUp, setShowSignUp] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
+
+  useEffect(()=>{
+    if(ENVIRONMENT_MODE === "DEV"){
+      console.log("users", TEST_USERS); 
+    }
+  }) // TODO: Remove for development purposes only.
 
 
   const handleSignUpClick = ()=>{

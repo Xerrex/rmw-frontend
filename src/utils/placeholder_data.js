@@ -19,7 +19,8 @@ const createUsers = (numberOfUsers)=>{
       "uuid": crypto.randomUUID(),
       "first_name": `John${i}`,
       "last_name": `Doe${i}`,
-      "email": `john${i}doe${i}@rmw.ride`
+      "email": `john${i}doe${i}@rmw.ride`,
+      "password": `john${i}doe${i}`
     }
 
     users.push(newUser);

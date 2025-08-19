@@ -2,6 +2,7 @@ import { Button, Dropdown, Space } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined, DownOutlined, 
   SmileOutlined, AlertOutlined } from '@ant-design/icons';
 import useHeaderContext from './Context/useHeaderContext';
+import useAuthContext from '../../../Auth/AuthContext/useAuthContextHook';
 
 const items = [
   { key: '1', label: (<span>1st menu item</span>),},
@@ -12,6 +13,9 @@ const items = [
 
 function Header({collapsed, setCollapsed}) {
   const {title} = useHeaderContext();
+  const {userDetails} = useAuthContext();
+
+  console.log("userDetails", userDetails);
 
   return (
   <header className="bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-200 body-font 
@@ -25,7 +29,8 @@ function Header({collapsed, setCollapsed}) {
       
       <div className='mr-2 text-black dark:text-gray-300'>
         <Dropdown menu={{ items }} overlayClassName="dark:bg-gray-700 dark:text-white">
-          <Space className="hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded"> 
+          <Space className="hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded">
+            <span className="text-white font-bold">{userDetails.first_name}</span>
             <AlertOutlined className="dark:text-gray-300"/> 
             <DownOutlined className="dark:text-gray-300"/> </Space>
         </Dropdown>

@@ -1,8 +1,8 @@
 import {useState} from 'react';
 import { Outlet, useLocation } from 'react-router';
-import AlertsView from '../Contexts/AlertContext/AlertsView';
-import useAlertsContext from '../Contexts/AlertContext/useAlertsContextHook';
-import useAuthContext from '../Contexts/AuthContext/useAuthContextHook';
+import AlertsView from '../AlertContext/AlertsView';
+import useAlertsContext from '../AlertContext/useAlertsContextHook';
+import useAuthContext from '../Auth/AuthContext/useAuthContextHook';
 import { HeaderProvider } from './UI/Header/Context/HeaderProvider';
 import SignIn from '../Auth/SignIn';
 import Sidebar from './UI/Sidebar';

@@ -4,8 +4,8 @@ import { BrowserRouter } from 'react-router'
 import '@ant-design/v5-patch-for-react-19';
 import './index.css'
 import App from './App.jsx';
-import {AlertsProvider} from './Contexts/AlertContext/AlertProvider.jsx';
-import { AuthProvider } from './Contexts/AuthContext/AuthProvider.jsx';
+import {AlertsProvider} from './AlertContext/AlertProvider.jsx';
+import { AuthProvider } from './Auth/AuthContext/AuthProvider.jsx';
 
 
 createRoot(document.getElementById('root')).render(

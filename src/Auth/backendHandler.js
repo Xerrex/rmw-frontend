@@ -1,8 +1,19 @@
 import { axiosWithoutAuth } from "../utils/rmwAxios";
+import { ENVIRONMENT_MODE } from "../utils/config";
+import { TEST_USERS } from "../utils/placeholder_data";
 
 
 export async function signUpHandler(formValues){
-  /** Handle the sign up call with the backend */
+  /** Sign Up Handler
+   * Handle the sign up call with the backend 
+   */
+
+
+  if(ENVIRONMENT_MODE==="DEV"){
+    console.log("Environment mode", ENVIRONMENT_MODE);
+    console.log("Sign up values", formValues);
+    return null;
+  }
 
   const url = "/auth/signup";
   const reqData = {
@@ -27,9 +38,33 @@ export async function signUpHandler(formValues){
 
 
 export async function signInHandler(formValues){
-  /**  Handle the sign in call to the backend */
+  /**  Sign In Handler
+   * Handle the sign in call to the backend 
+  */
   // {email: 'sasas', password: 'sasasa'}
+
+  if(ENVIRONMENT_MODE==="DEV"){
+    console.log("Environment mode", ENVIRONMENT_MODE); // TODO: remove
     console.log("Form values", formValues); // TODO: remove
+    const user = TEST_USERS.find((user)=>user.email === formValues.email);
+    if(user && user.password == formValues.password){
+      return {
+        "message": "Successful sign in(DEV Mode)",
+        "details": {
+          "uuid": user.uuid,
+          "first_name": user.first_name,
+          "last_name": user.last_name,
+          "email": user.email
+        },
+        "token": {
+          "access_token": user.uuid,
+          "token_type": "bearer"
+        }
+      }
+    }else{
+      return null;
+    }
+  }
 
   const url = "/auth/signin";
   const reqData = {

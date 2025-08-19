@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Modal, Form, Input } from 'antd';
 import { useNavigate } from 'react-router';
-import useAlertsContext from '../Contexts/AlertContext/useAlertsContextHook';
-import useAuthContext from '../Contexts/AuthContext/useAuthContextHook';
+import useAlertsContext from '../AlertContext/useAlertsContextHook';
+import useAuthContext from './AuthContext/useAuthContextHook';
 import { signInHandler } from './backendHandler';
 import { alertTypes } from '../utils/definitions';
 

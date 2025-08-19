@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Form, Input } from 'antd';
-import useAlertsContext from '../Contexts/AlertContext/useAlertsContextHook';
+import useAlertsContext from '../AlertContext/useAlertsContextHook';
 import { signUpHandler } from './backendHandler';
 import { alertTypes } from '../utils/definitions';
 
