@@ -15,8 +15,6 @@ function Header({collapsed, setCollapsed}) {
   const {title} = useHeaderContext();
   const {userDetails} = useAuthContext();
 
-  console.log("userDetails", userDetails);
-
   return (
   <header className="bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-200 body-font 
       shadow-sm dark:shadow-gray-700/50 transition-colors duration-200 mb-2">

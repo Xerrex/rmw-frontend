@@ -1,22 +1,30 @@
 import {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router';
 import SignUp from '../Auth/SignUp';
 import SignIn from '../Auth/SignIn';
 import AlertsView from '../AlertContext/AlertsView';
 import useAlertsContext from '../AlertContext/useAlertsContextHook';
+import useAuthContext from '../Auth/AuthContext/useAuthContext';
 import { ENVIRONMENT_MODE } from '../utils/config';
 import { TEST_USERS } from '../utils/placeholder_data';
 
 
 function LandingPage() {
+  const navigate = useNavigate();
   const {rmwAlerts, removeAlert} = useAlertsContext();
+  const {isLoggedIn} = useAuthContext();
   const [showSignUp, setShowSignUp] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
 
   useEffect(()=>{
     if(ENVIRONMENT_MODE === "DEV"){
       console.log("users", TEST_USERS); 
+    }  // TODO: Remove for development purposes only.
+
+    if(isLoggedIn){
+      navigate("/dashboard")
     }
-  }) // TODO: Remove for development purposes only.
+  }, [isLoggedIn])
 
 
   const handleSignUpClick = ()=>{

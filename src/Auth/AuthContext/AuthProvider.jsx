@@ -10,11 +10,13 @@ export const AuthProvider = ({children})=>{
   */
  const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(()=>{
     const userData = getUser();
     if(userData !== null && userData !== undefined){
      setUserDetails(userData);
+     setIsLoggedIn(true);
      navigate("/dashboard");
     }else {
       // navigate the user to the login page.
@@ -25,12 +27,11 @@ export const AuthProvider = ({children})=>{
   }, [])
 
   const saveUserDetails = (userData)=>{
-    console.log("Sign in response", userData); // TODO: remove
     localStorage.setItem("userDetails", JSON.stringify(userData))
   }
   
   const getUser = ()=>{
-    const userData = localStorage.getItem("user");
+    const userData = localStorage.getItem("userDetails");
     return JSON.parse(userData);
   }
 
@@ -40,7 +41,7 @@ export const AuthProvider = ({children})=>{
   }
 
   return (
-    <AuthContext.Provider value={{saveUserDetails, userDetails, logout}}>
+    <AuthContext.Provider value={{saveUserDetails, userDetails, isLoggedIn, logout}}>
       {children}
     </AuthContext.Provider>
   )
