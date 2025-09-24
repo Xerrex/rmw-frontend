@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Layout, Menu } from "antd";
 import { BarChartOutlined, UserOutlined, CarOutlined, LockOutlined } from '@ant-design/icons';
+import useAuthContext from "../../Auth/AuthContext/useAuthContext";
 
 
 const { Sider} = Layout;
@@ -23,7 +24,9 @@ const menuItems = [
 
 function Sidebar({collapsed}) {
   const navigate = useNavigate();
+  const {logout} = useAuthContext();
   const [current, setCurrent] = useState('1');
+
 
   const menuItemClicked = (e)=>{
     const itemKey = e.key;
@@ -32,10 +35,6 @@ function Sidebar({collapsed}) {
     const clickedItem = menuItems.find((menuItem)=>menuItem.key === itemKey)
     console.log("clickedItem", clickedItem); // TODO: Remove
     navigate(clickedItem.path)
-  }
-
-  const handleLogout = ()=>{
-    console.log("handle logout")
   }
 
   return (
@@ -50,11 +49,11 @@ function Sidebar({collapsed}) {
         {collapsed === false ? (
           <button className="w-full bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 
           dark:hover:bg-indigo-700 text-white p-4 shadow-lg  transition duration-200 
-            rounded-sm" onClick={()=>handleLogout()}><LockOutlined style={{fontSize:"15px", marginRight:"10px"}}/>Logout </button>
+            rounded-sm" onClick={()=>logout()}><LockOutlined style={{fontSize:"15px", marginRight:"10px"}}/>Logout </button>
           ):(
           <button className="w-full bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 
           dark:hover:bg-indigo-700 text-white p-4 shadow-lg  transition duration-200 
-            rounded-sm" onClick={()=>handleLogout()}><LockOutlined style={{fontSize:"20px"}}/></button>)}
+            rounded-sm" onClick={()=>logout()}><LockOutlined style={{fontSize:"20px"}}/></button>)}
       </div>
 
     </Sider>

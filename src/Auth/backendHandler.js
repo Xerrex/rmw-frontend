@@ -28,10 +28,11 @@ export async function signUpHandler(formValues){
   if(res.status === 200){
     const resData = await res.data;
     console.log("Sign up response", resData); // TODO: remove
-    return resData;
+    return {success: true, email: resData.details.email, error: null}
+  }else if(res.status === 409){
+    return {success: false, email: null, error: "Email address already in use, use a different address"}
   }else{
-    // TODO: handle 409 error {"detail": "User with email zjixv@telegmail.com exists."}
-    return null;
+    return {success: false, email: null, error: "Account was not created successfully"};
   }
   
 }
@@ -72,12 +73,18 @@ export async function signInHandler(formValues){
     "password": formValues.password
   }
 
-  const res = await axiosWithoutAuth.post(url, reqData);
-  if(res.status === 200){
-    const resData = await res.data;
-    console.log("Sign in response", resData); // TODO: remove
-    return resData;
-  }else{
-    return null;
+ 
+
+  try {
+    const res = await axiosWithoutAuth.post(url, reqData);
+    if(res.status === 200){
+      const resData = await res.data;
+      return {success: true, data:{...resData.details, ...resData.token}, error: null};
+    }
+
+  }catch( error){
+    return {success: false, data:null, error: error.response.data.detail};
   }
+
+  return {success: false, data:null, error: "Sign in into your account was not successful"};
 }

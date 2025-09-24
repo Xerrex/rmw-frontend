@@ -29,16 +29,15 @@ function SignUp({isOpen, setIsOpen}) {
       signUpHandler(values)
       .then((resData)=>{
         
-        if(resData !== null){
+        if(resData.success){
           form.setFieldsValue({})
           setIsOpen(false)
 
-          addAlert(alertTypes.success, "Create account", `Account '${resData.details.email}' was created successfully`);
+          addAlert(alertTypes.success, "Create account", `Account '${resData.email}' was created. Moving you to Login`);
           // TODO: alert with more info
           // TODO: move to SignIN.
-          // TODO: Move to location where Sign in was triggered from
         }else{
-          addAlert(alertTypes.error, "Create account", "Account was not created successfully");
+          addAlert(alertTypes.error, "Create account", resData.error);
         }
       })
 
@@ -49,7 +48,7 @@ function SignUp({isOpen, setIsOpen}) {
     }).catch((errorInfo)=>{
       //alert Found errors
        console.log("Form Errors", errorInfo) // TODO: remove
-       addAlert(alertTypes.error, "Sign in", "Sign in was not successful");
+       addAlert(alertTypes.error, "Sign up", "Sign up was not successful");
         
       setDisableCancel(false); // NOTE: Disable the Cancel button
       setDisableOk(false);

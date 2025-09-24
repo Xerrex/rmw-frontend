@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Modal, Form, Input } from 'antd';
 import { useNavigate } from 'react-router';
 import useAlertsContext from '../AlertContext/useAlertsContextHook';
-import useAuthContext from './AuthContext/useAuthContextHook';
+import useAuthContext from './AuthContext/useAuthContext';
 import { signInHandler } from './backendHandler';
 import { alertTypes } from '../utils/definitions';
 
@@ -17,7 +17,7 @@ function SignIn({isOpen, setIsOpen, navigateTo}) {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const {addAlert} = useAlertsContext();
-  const {setUserDetails} = useAuthContext();
+  const {saveUserDetails} = useAuthContext();
   const [disableOk, setDisableOk] = useState(false);
   const [disableCancel, setDisableCancel] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -33,17 +33,15 @@ function SignIn({isOpen, setIsOpen, navigateTo}) {
     // TODO: Get Sign In details
     signInHandler(values)
     .then((resData)=>{
-      if(resData !== null){
-        setUserDetails({...resData.details, token:resData.token});
-        // TODO: Consider saving token to localStorage
-        addAlert(alertTypes.success, "Sign in", "Sign in into you account was successful");
+      if(resData.success){
+        saveUserDetails(resData.data);
+        addAlert(alertTypes.success, "Sign In", "Sign in into you account was successful");
         form.resetFields();
         setIsOpen(false)
-       
         navigate(moveTo, {replace:true});  // move to dashboard on Sign in.
         // TODO: Move to location where Sign in was triggered from
       }else{
-        addAlert(alertTypes.error, "Sign in", "Sign in into your account was not successful");
+        addAlert(alertTypes.error, "Sign In", resData.error);
       }
     })
 
