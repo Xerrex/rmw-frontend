@@ -33,7 +33,6 @@ function Sidebar({collapsed}) {
     setCurrent(itemKey);
 
     const clickedItem = menuItems.find((menuItem)=>menuItem.key === itemKey)
-    console.log("clickedItem", clickedItem); // TODO: Remove
     navigate(clickedItem.path)
   }
 

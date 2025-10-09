@@ -18,11 +18,12 @@ function withoutAuthAxios(){
 
 
 function withAuthAxios(){
-  const token = "dadadad" // TODO get token from localstorage
+
+  const token = JSON.parse(localStorage.getItem("userDetails"))?.access_token
   const instance = axios.create({
     baseURL: BACKEND_BASE_URL,
-    // allowAbsoluteUrls: false,
-    timeout: 5000,
+    allowAbsoluteUrls: false,
+    // timeout: 5000,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',

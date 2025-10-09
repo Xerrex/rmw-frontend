@@ -35,15 +35,20 @@ function Dashboard() {
       
        {/* Main Content */}
       <div className="p-2 w-full">
-        <div className="flex justify-center-safe">
-          <AlertsView rmwAlerts={rmwAlerts} removeAlert={removeAlert}/>
-        </div>
-
+        
         <HeaderProvider>
-          <Header collapsed={collapsed} setCollapsed={setCollapsed}/>
-
-          <Outlet />
+          <div className="flex flex-col">
+            <div className="sticky z-40">
+              <Header collapsed={collapsed} setCollapsed={setCollapsed}/>
+            </div>
+            <div className="flex justify-center-safe absolute right-0 left-0 z-50">
+              <AlertsView rmwAlerts={rmwAlerts} removeAlert={removeAlert}/>
+            </div>
           
+            <Outlet />
+            
+          </div>
+        
         </HeaderProvider>
         
       </div>

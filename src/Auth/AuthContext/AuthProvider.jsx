@@ -37,7 +37,8 @@ export const AuthProvider = ({children})=>{
 
   const logout = ()=>{
     navigate("/");
-     localStorage.clear();
+    setIsLoggedIn(false);
+    localStorage.clear();
   }
 
   return (

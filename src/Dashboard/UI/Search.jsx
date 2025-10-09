@@ -14,14 +14,15 @@ function Search({placeholder}) {
   }, 300);
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex w-full items-center justify-center">
       <label htmlFor="search" className="sr-only"> Search</label>
-      <input className="block w-1/2 rounded-md border-gray-200 dark:border-white py-[9px] pl-10
-        mt-2 text-sm outline-2 placeholder:text-gray-500 dark:placeholder:text-white" 
-        placeholder={placeholder} onChange={(e)=>handleSearch(e.target.value)}
-          defaultValue={searchParams.get('sort')?.toString()}/>
+      <input className="block w-1/2 border-gray-200 dark:border-white rounded-md  py-[9px] pl-10
+      mt-2 text-sm outline-2 placeholder:text-gray-500 dark:placeholder:text-white" 
+      placeholder={placeholder} onChange={(e)=>handleSearch(e.target.value)}
+        defaultValue={searchParams.get('sort')?.toString()}/>
 
       <SearchOutlined style={{fontSize:"20px", marginLeft:"10px"}}/>
+      
     </div>
   )
 }

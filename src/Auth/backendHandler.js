@@ -10,9 +10,8 @@ export async function signUpHandler(formValues){
 
 
   if(ENVIRONMENT_MODE==="DEV"){
-    console.log("Environment mode", ENVIRONMENT_MODE);
     console.log("Sign up values", formValues);
-    return null;
+    return {success: true, email: formValues.email, error: null}
   }
 
   const url = "/auth/signup";

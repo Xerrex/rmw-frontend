@@ -2,7 +2,7 @@ import { Image } from "antd";
 import { CalendarOutlined, FieldTimeOutlined} from "@ant-design/icons";
 import  RideImage from "../../assets/car.png";
 
-function RideCard({ride}) {
+function RideCard({ride, openRideEditor}) {
 
   const [dpt_date, dpt_time] = ride.depart_time.split(" ");
   const [end_date, end_time] = ride.depart_time.split(" ");
@@ -39,14 +39,22 @@ function RideCard({ride}) {
       </div>
     
       <div className="flex flex-col space-y-2">
-        <button className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700
-         text-white p-4 shadow-lg  transition duration-200 rounded-sm">Join</button>
-        
-        <button className="bg-indigo-800 hover:bg-indigo-600 dark:bg-indigo-700 dark:hover:bg-indigo-800 
-        text-white p-4 shadow-lg  transition duration-200 rounded-sm">View Request(For requester)</button>
-        
-        <button className="bg-indigo-800 hover:bg-indigo-600 dark:bg-indigo-700 dark:hover:bg-indigo-800
-         text-white p-4 shadow-lg  transition duration-200  rounded-sm">View Requests(For Owner)</button>
+        <div className="flex justify-around">
+          <button className="bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700
+         text-white p-4 shadow-lg  transition duration-200 rounded-sm w-40">Join</button>
+
+         <button className="bg-indigo-800 hover:bg-indigo-600 dark:bg-indigo-700 dark:hover:bg-indigo-800 
+        text-white p-4 shadow-lg  transition duration-200 rounded-sm w-40">View Request</button>
+        </div>
+
+        <div className="flex justify-around">
+         <button className="bg-indigo-800 hover:bg-indigo-600 dark:bg-indigo-700 dark:hover:bg-indigo-800
+         text-white p-4 shadow-lg  transition duration-200  rounded-sm w-40">View Requests</button>
+
+         <button className="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700
+         text-white p-4 shadow-lg  transition duration-200 rounded-sm w-40" onClick={()=>openRideEditor(ride)}>Edit</button>
+        </div>
+
       </div>
     </div>
   )
