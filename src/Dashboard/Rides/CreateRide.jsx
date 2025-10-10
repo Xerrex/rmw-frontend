@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Modal, Form, Input, DatePicker, Button, Space } from 'antd';
 import { CarOutlined, UserOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { DATE_FORMAT } from '../../utils/config';
 
 
 const formItemLayout = {
@@ -27,8 +28,15 @@ function CreateRide({isOpen, setIsOpen}) {
     setDisableOk(true) // NOTE: Disable the ok button
     setConfirmLoading(true) // Note: show the loading icon
     
-    console.log('Form values:', values);
-     form.resetFields();
+   const formattedValues = {
+      ...values,
+    depart_time: values.depart_time?.format(DATE_FORMAT),
+    end_time: values.end_time?.format(DATE_FORMAT),
+    }
+    console.log('Form values:', formattedValues);
+
+    form.resetFields();
+    setIsOpen(false);
   };
 
   const handleOnCancel = () => {
@@ -63,14 +71,14 @@ function CreateRide({isOpen, setIsOpen}) {
         {/* depart_time */}
           <Form.Item name="depart_time" label={ <span className="text-gray-700 dark:text-gray-300 font-medium">Departure Time</span>}
             rules={[{ required: true, message: 'Please select departure time!' }]}>
-            <DatePicker showTime format="YYYY-MM-DD HH:mm" className="w-full border-gray-300 dark:border-gray-600 [&_.ant-picker-input>input]:text-gray-900 
+            <DatePicker showTime format={DATE_FORMAT} className="w-full border-gray-300 dark:border-gray-600 [&_.ant-picker-input>input]:text-gray-900 
            [&_.ant-picker-input>input]:dark:text-white [&_.ant-picker-suffix]:text-gray-400" placeholder="Select date and time" />
           </Form.Item>
           
         {/* end_time */}
         <Form.Item name="end_time"  label={ <span className="text-gray-700 dark:text-gray-300 font-medium">Arrival Time</span>}
           rules={[{ required: true, message: 'Please select arrival time!' }]} >
-          <DatePicker showTime format="YYYY-MM-DD HH:mm" className="w-full border-gray-300 dark:border-gray-600 [&_.ant-picker-input>input]:text-gray-900 
+          <DatePicker showTime format={DATE_FORMAT} className="w-full border-gray-300 dark:border-gray-600 [&_.ant-picker-input>input]:text-gray-900 
            [&_.ant-picker-input>input]:dark:text-white [&_.ant-picker-suffix]:text-gray-400" placeholder="Select date and time" />
         </Form.Item>
 
