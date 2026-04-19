@@ -24,7 +24,7 @@ export const SignInSection: React.FC = () => {
 
   return (
     <div className="w-full max-w-md px-4 py-12 sm:px-6 lg:px-8">
-      <div className="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-xl backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90 sm:p-8">
+      <div className="rounded-none border border-slate-200 bg-white/90 p-6 shadow-xl backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90 sm:p-8">
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 to-cyan-600 shadow-lg">

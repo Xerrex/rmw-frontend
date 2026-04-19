@@ -39,7 +39,8 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ features }) => {
   return (
-    <section className="flex h-full min-h-140 items-center bg-linear-to-br from-sky-700 via-sky-600 to-cyan-600 px-6 py-10 sm:min-h-155 sm:px-8 sm:py-12 lg:min-h-0 lg:px-10 lg:py-14 xl:px-12">
+    <section className="flex h-full min-h-140 items-center bg-linear-to-br from-sky-700 via-sky-600 to-cyan-600 px-6 
+    py-10 sm:min-h-155 sm:px-8 sm:py-12 lg:min-h-0 lg:px-10">
       <div className="relative mx-auto w-full max-w-5xl">
         {/* Animated Background Elements */}
         <div className="absolute -left-20 -top-20 h-64 w-64 animate-pulse rounded-full bg-white/10 blur-3xl" />
@@ -47,7 +48,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ features }) => {
         
         <div className="relative space-y-8">
           {/* Badge */}
-          <Tag className="inline-flex w-fit items-center gap-2 border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
+          <Tag className="inline-flex w-fit items-center gap-2 border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold 
+            uppercase tracking-wider text-white backdrop-blur-sm">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
             Riding My Way
           </Tag>
@@ -77,7 +79,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ features }) => {
           </div>
 
           {/* Features Grid */}
-          <div className="space-y-4 pt-4">
+          <div className="space-y-4 pt-4 px-10">
             <Text className="text-xs font-semibold uppercase tracking-wider text-sky-200">
               Why choose Riding My Way
             </Text>
