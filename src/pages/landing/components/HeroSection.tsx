@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button, Col, Row, Space } from 'antd';
 import { CarOutlined } from '@ant-design/icons';
-import type { AuthTabKey } from '../hooks/types';
 
-interface HeroSectionProps {
-  onSelectTab: (tab: AuthTabKey) => void;
-}
+// interface HeroSectionProps {
+//   onSelectTab: (tab: AuthTabKey) => void;
+// }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectTab }) => {
+// export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectTab }) => {
+export const HeroSection: React.FC = () => {
   return (
     <section className="px-4 py-14 md:py-20">
       <Row gutter={[32, 32]} align="middle" className="mx-auto max-w-7xl">
@@ -23,10 +23,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectTab }) => {
               Create rides, share seats, and let passengers join only at pickup and drop-off points that are within your route.
             </p>
             <Space wrap>
-              <Button type="primary" size="large" onClick={() => onSelectTab('login')}>
+              <Button type="primary" size="large" >
                 Sign In
               </Button>
-              <Button size="large" onClick={() => onSelectTab('signup')}>
+              <Button size="large">
                 Create Account
               </Button>
             </Space>
