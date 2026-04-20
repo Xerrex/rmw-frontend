@@ -1,7 +1,7 @@
 // components/HeroSection.tsx
 import React from 'react';
-import { CheckCircleOutlined, EnvironmentOutlined, SafetyCertificateOutlined, TeamOutlined, ArrowRightOutlined } from '@ant-design/icons';
-import { Button, Typography, Tag } from 'antd';
+import { CheckCircleOutlined, EnvironmentOutlined, SafetyCertificateOutlined, TeamOutlined } from '@ant-design/icons';
+import { Typography } from 'antd';
 import type { LandingFeatureItem } from '../hooks/types';
 
 const { Title, Text } = Typography;
@@ -33,11 +33,30 @@ const featureStyles = {
   },
 } as const;
 
-interface HeroSectionProps {
-  features: LandingFeatureItem[];
-}
+const features: LandingFeatureItem[] = [
+  {
+    key: 'route',
+    title: 'Route-constrained stops',
+    description: 'Pickup and drop-off choices stay aligned with the driver route for smoother trips.',
+  },
+  {
+    key: 'matching',
+    title: 'Smart ride matching',
+    description: 'Passengers quickly discover active rides with relevant route and timing filters.',
+  },
+  {
+    key: 'trust',
+    title: 'Trusted interactions',
+    description: 'Clear request states and transparent ride details keep drivers and riders informed.',
+  },
+  {
+    key: 'social',
+    title: 'Commute community',
+    description: 'Turn recurring commutes into collaborative, cost-effective shared rides.',
+  },
+];
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ features }) => {
+export const HeroSection: React.FC = () => {
   return (
     <section className="flex h-full min-h-140 items-center bg-linear-to-br from-sky-700 via-sky-600 to-cyan-600 px-6 
     py-10 sm:min-h-155 sm:px-8 sm:py-12 lg:min-h-0 lg:px-10">
@@ -47,12 +66,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ features }) => {
         <div className="absolute -bottom-20 right-10 h-48 w-48 animate-pulse rounded-full bg-cyan-300/20 blur-3xl" />
         
         <div className="relative space-y-8">
-          {/* Badge */}
-          <Tag className="inline-flex w-fit items-center gap-2 border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold 
-            uppercase tracking-wider text-white backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-            Riding My Way
-          </Tag>
+          {/* App name */}
+          <div className="flex items-center gap-3">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+            <span className="text-3xl font-extrabold tracking-wide text-white sm:text-4xl lg:text-5xl">
+              Riding My Way
+            </span>
+          </div>
 
           {/* Hero Content */}
           <div className="space-y-4">
@@ -67,24 +87,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ features }) => {
             </Text>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-wrap gap-4">
-            <Button type="primary" size="large" className="h-12 px-8 text-base font-semibold shadow-lg">
-              Get Started
-              <ArrowRightOutlined />
-            </Button>
-            <Button size="large" className="h-12 border-white/30 bg-white/10 px-8 text-base font-semibold text-white backdrop-blur-sm hover:bg-white/20">
-              Learn More
-            </Button>
-          </div>
-
           {/* Features Grid */}
-          <div className="space-y-4 pt-4 px-10">
+          <div className="space-y-4 pt-4 px-2">
             <Text className="text-xs font-semibold uppercase tracking-wider text-sky-200">
               Why choose Riding My Way
             </Text>
             
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4">
               {features.map((feature) => {
                 const style = featureStyles[feature.key as keyof typeof featureStyles];
                 

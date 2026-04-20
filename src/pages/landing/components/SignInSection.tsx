@@ -1,62 +1,112 @@
 // components/SignInSection.tsx
 import React, { useState } from 'react';
-import { Button, Checkbox, Divider, Form, Input, Alert, Space, Typography } from 'antd';
-import { CarOutlined, LockOutlined, MailOutlined, GoogleOutlined, AppleOutlined } from '@ant-design/icons';
+import { Button, Divider, Form, Input, Alert, Typography } from 'antd';
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import logo from '../../../assets/logo.png';
+import { ThemeToggle } from '../../../components/ThemeToggle';
 
 const { Title, Text } = Typography;
 
+type FormMode = 'signin' | 'signup' | 'forgot';
+
 export const SignInSection: React.FC = () => {
+  const [mode, setMode] = useState<FormMode>('signin');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  const onFinish = async (values: any) => {
+  const resetState = (nextMode: FormMode) => {
+    setError(null);
+    setSuccessMsg(null);
+    setMode(nextMode);
+  };
+
+  const handleSignIn = async (values: { email: string; password: string }) => {
     setLoading(true);
     setError(null);
     try {
-      console.log('Sign in values:', values);
+      console.log('Sign in:', values);
       await new Promise(resolve => setTimeout(resolve, 1000));
-    } catch (err) {
+    } catch {
       setError('Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSignUp = async (values: { firstName: string; email: string; password: string; confirmPassword: string }) => {
+    if (values.password !== values.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      console.log('Sign up:', values);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSuccessMsg('Account created! You can now sign in.');
+      setMode('signin');
+    } catch {
+      setError('Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (values: { email: string }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log('Forgot password:', values);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSuccessMsg('If that email is registered, a reset link has been sent.');
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="w-full max-w-md px-4 py-12 sm:px-6 lg:px-8">
-      <div className="rounded-none border border-slate-200 bg-white/90 p-6 shadow-xl backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90 sm:p-8">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 to-cyan-600 shadow-lg">
-            <CarOutlined style={{ fontSize: 32, color: 'white' }} />
-          </div>
-          <Title level={2} className="mb-2! text-2xl! sm:text-3xl!">
-            Welcome back
-          </Title>
-          <Text type="secondary" className="text-sm">
-            Sign in to manage your rides, requests, and route-based trip matches.
-          </Text>
+    <div className="w-full max-w-sm">
+      {/* Theme toggle */}
+      <div className="mb-6 flex justify-end">
+        <div className="rounded-full border border-slate-200/80 bg-slate-100/80 p-1 shadow-sm
+          dark:border-slate-700/80 dark:bg-slate-800/80">
+          <ThemeToggle />
         </div>
+      </div>
 
-        {/* Error Alert */}
-        {error && (
-          <Alert
-            message={error}
-            type="error"
-            showIcon
-            closable
-            className="mb-6"
-            onClose={() => setError(null)}
-          />
-        )}
+      {/* Logo */}
+      <div className="mb-8 flex flex-col items-center gap-3">
+        <img
+          src={logo}
+          alt="Riding My Way logo"
+          className="h-20 w-auto object-contain drop-shadow-md"
+        />
+        <Title level={3} className="m-0! text-center text-slate-800 dark:text-slate-100">
+          {mode === 'signin' && 'Welcome back'}
+          {mode === 'signup' && 'Create an account'}
+          {mode === 'forgot' && 'Reset your password'}
+        </Title>
+        <Text type="secondary" className="text-center text-sm">
+          {mode === 'signin' && 'Sign in to manage your rides and route matches.'}
+          {mode === 'signup' && 'Join Riding My Way and start sharing your commute.'}
+          {mode === 'forgot' && "Enter your email and we'll send you a reset link."}
+        </Text>
+      </div>
 
-        {/* Sign In Form */}
-        <Form
-          layout="vertical"
-          requiredMark={false}
-          onFinish={onFinish}
-          className="space-y-2"
-        >
+      {/* Alerts */}
+      {error && (
+        <Alert message={error} type="error" showIcon closable className="mb-5" onClose={() => setError(null)} />
+      )}
+      {successMsg && (
+        <Alert message={successMsg} type="success" showIcon closable className="mb-5" onClose={() => setSuccessMsg(null)} />
+      )}
+
+      {/* ── Sign In Form ── */}
+      {mode === 'signin' && (
+        <Form layout="vertical" requiredMark={false} onFinish={handleSignIn}>
           <Form.Item
             label={<Text strong>Email address</Text>}
             name="email"
@@ -86,15 +136,15 @@ export const SignInSection: React.FC = () => {
             />
           </Form.Item>
 
-          <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-            <Checkbox className="text-slate-600 dark:text-slate-300">Remember me</Checkbox>
-            <a
-              href="#"
-              onClick={(e) => e.preventDefault()}
-              className="text-sm text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
+          <div className="mb-5 flex justify-end">
+            <button
+              type="button"
+              onClick={() => resetState('forgot')}
+              className="cursor-pointer border-none bg-transparent p-0 text-sm text-sky-600 hover:text-sky-700
+                dark:text-sky-400 dark:hover:text-sky-300"
             >
               Forgot password?
-            </a>
+            </button>
           </div>
 
           <Form.Item className="mb-4">
@@ -110,45 +160,145 @@ export const SignInSection: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
+      )}
 
-        {/* Social Sign In */}
-        <Divider className="my-6">
-          <span className="text-xs text-slate-400">OR CONTINUE WITH</span>
-        </Divider>
+      {/* ── Sign Up Form ── */}
+      {mode === 'signup' && (
+        <Form layout="vertical" requiredMark={false} onFinish={handleSignUp}>
+          <Form.Item
+            label={<Text strong>First name</Text>}
+            name="firstName"
+            rules={[{ required: true, message: 'Please enter your first name' }]}
+          >
+            <Input
+              size="large"
+              prefix={<UserOutlined className="text-slate-400" />}
+              placeholder="Jane"
+              className="rounded-lg"
+            />
+          </Form.Item>
 
-        <Space direction="vertical" size="middle" className="w-full">
-          <Button
-            size="large"
-            block
-            icon={<GoogleOutlined />}
-            className="flex items-center justify-center gap-2 rounded-lg border-slate-200 dark:border-slate-700"
-            onClick={() => console.log('Google sign in')}
+          <Form.Item
+            label={<Text strong>Email address</Text>}
+            name="email"
+            rules={[
+              { required: true, message: 'Please enter your email' },
+              { type: 'email', message: 'Enter a valid email address' },
+            ]}
           >
-            Sign in with Google
-          </Button>
-          <Button
-            size="large"
-            block
-            icon={<AppleOutlined />}
-            className="flex items-center justify-center gap-2 rounded-lg border-slate-200 dark:border-slate-700"
-            onClick={() => console.log('Apple sign in')}
-          >
-            Sign in with Apple
-          </Button>
-        </Space>
+            <Input
+              size="large"
+              prefix={<MailOutlined className="text-slate-400" />}
+              placeholder="you@example.com"
+              className="rounded-lg"
+            />
+          </Form.Item>
 
-        {/* Sign Up Link */}
-        <div className="mt-8 text-center">
-          <Text type="secondary">Need an account? </Text>
-          <a
-            href="#"
-            onClick={(e) => e.preventDefault()}
-            className="font-semibold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
+          <Form.Item
+            label={<Text strong>Password</Text>}
+            name="password"
+            rules={[{ required: true, message: 'Please enter a password' }, { min: 8, message: 'At least 8 characters' }]}
           >
-            Sign up now
-          </a>
-        </div>
-      </div>
+            <Input.Password
+              size="large"
+              prefix={<LockOutlined className="text-slate-400" />}
+              placeholder="Create a password"
+              className="rounded-lg"
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={<Text strong>Confirm password</Text>}
+            name="confirmPassword"
+            rules={[{ required: true, message: 'Please confirm your password' }]}
+          >
+            <Input.Password
+              size="large"
+              prefix={<LockOutlined className="text-slate-400" />}
+              placeholder="Repeat your password"
+              className="rounded-lg"
+            />
+          </Form.Item>
+
+          <Form.Item className="mb-4 mt-2">
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              loading={loading}
+              className="h-11 rounded-lg text-base font-semibold shadow-sm"
+            >
+              Create Account
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
+
+      {/* ── Forgot Password Form ── */}
+      {mode === 'forgot' && (
+        <Form layout="vertical" requiredMark={false} onFinish={handleForgotPassword}>
+          <Form.Item
+            label={<Text strong>Email address</Text>}
+            name="email"
+            rules={[
+              { required: true, message: 'Please enter your email' },
+              { type: 'email', message: 'Enter a valid email address' },
+            ]}
+          >
+            <Input
+              size="large"
+              prefix={<MailOutlined className="text-slate-400" />}
+              placeholder="you@example.com"
+              className="rounded-lg"
+            />
+          </Form.Item>
+
+          <Form.Item className="mb-4">
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              loading={loading}
+              className="h-11 rounded-lg text-base font-semibold shadow-sm"
+            >
+              Send Reset Link
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
+
+      {/* ── Footer links ── */}
+      <Divider className="my-4" />
+
+      {mode === 'signin' && (
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+          Don&apos;t have an account?{' '}
+          <button
+            type="button"
+            onClick={() => resetState('signup')}
+            className="cursor-pointer border-none bg-transparent p-0 font-semibold text-sky-600
+              hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
+          >
+            Sign up
+          </button>
+        </p>
+      )}
+
+      {(mode === 'signup' || mode === 'forgot') && (
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+          Already have an account?{' '}
+          <button
+            type="button"
+            onClick={() => resetState('signin')}
+            className="cursor-pointer border-none bg-transparent p-0 font-semibold text-sky-600
+              hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
+          >
+            Sign in
+          </button>
+        </p>
+      )}
     </div>
   );
 };
