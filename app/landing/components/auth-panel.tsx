@@ -1,0 +1,56 @@
+"use client"
+
+import { useMemo, useState } from "react"
+
+import { ResetPasswordForm } from "@/app/(auth)/reset-password-form"
+import { SignInForm } from "@/app/(auth)/sign-in-form"
+import { SignUpForm } from "@/app/(auth)/sign-up-form"
+
+type AuthView = "signin" | "reset" | "signup"
+
+const authContent: Record<AuthView, { title: string; description: string }> = {
+  signin: {
+    title: "Welcome back",
+    description: "Sign in to publish rides or request seats on your route.",
+  },
+  reset: {
+    title: "Reset password",
+    description: "Enter your email and we will send you reset instructions.",
+  },
+  signup: {
+    title: "Create your account",
+    description: "Join the Ride My Way community and start sharing trips.",
+  },
+}
+
+export function AuthPanel() {
+  const [view, setView] = useState<AuthView>("signin")
+
+  const content = useMemo(() => authContent[view], [view])
+
+  return (
+    <section className="flex h-full items-center justify-center bg-card/80 px-5 py-8 sm:px-8 lg:px-10">
+      <div className="w-full max-w-md space-y-6 rounded-2xl border border-border bg-background p-6 shadow-lg sm:p-8">
+        <header className="space-y-1">
+          <h2 className="text-2xl font-bold text-foreground">{content.title}</h2>
+          <p className="text-sm text-muted-foreground">{content.description}</p>
+        </header>
+
+        {view === "signin" ? (
+          <SignInForm
+            onForgotPassword={() => setView("reset")}
+            onSignUp={() => setView("signup")}
+          />
+        ) : null}
+
+        {view === "reset" ? (
+          <ResetPasswordForm onBackToSignIn={() => setView("signin")} />
+        ) : null}
+
+        {view === "signup" ? (
+          <SignUpForm onBackToSignIn={() => setView("signin")} />
+        ) : null}
+      </div>
+    </section>
+  )
+}
