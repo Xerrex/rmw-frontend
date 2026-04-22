@@ -3,10 +3,11 @@
 import { useMemo, useState } from "react"
 
 import { ResetPasswordForm } from "@/app/(auth)/reset-password-form"
+import { SetPasswordForm } from "@/app/(auth)/set-password-form"
 import { SignInForm } from "@/app/(auth)/sign-in-form"
 import { SignUpForm } from "@/app/(auth)/sign-up-form"
 
-type AuthView = "signin" | "reset" | "signup"
+type AuthView = "signin" | "reset" | "setpassword" | "signup"
 
 const authContent: Record<AuthView, { title: string; description: string }> = {
   signin: {
@@ -16,6 +17,10 @@ const authContent: Record<AuthView, { title: string; description: string }> = {
   reset: {
     title: "Reset password",
     description: "Enter your email and we will send you reset instructions.",
+  },
+  setpassword: {
+    title: "Set new password",
+    description: "Use your reset token to securely set a new password.",
   },
   signup: {
     title: "Create your account",
@@ -44,7 +49,14 @@ export function AuthPanel() {
         ) : null}
 
         {view === "reset" ? (
-          <ResetPasswordForm onBackToSignIn={() => setView("signin")} />
+          <ResetPasswordForm
+            onBackToSignIn={() => setView("signin")}
+            onSetPassword={() => setView("setpassword")}
+          />
+        ) : null}
+
+        {view === "setpassword" ? (
+          <SetPasswordForm onBackToSignIn={() => setView("signin")} />
         ) : null}
 
         {view === "signup" ? (

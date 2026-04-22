@@ -7,10 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
 
-const signUpSchema = z
+const setPasswordSchema = z
   .object({
-    fullName: z.string().min(2, "Full name must be at least 2 characters"),
     email: z.string().email("Enter a valid email address"),
+    resetToken: z.string().min(6, "Reset token must be at least 6 characters"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().min(8, "Confirm your password"),
   })
@@ -19,33 +19,33 @@ const signUpSchema = z
     path: ["confirmPassword"],
   })
 
-type SignUpValues = z.infer<typeof signUpSchema>
+type SetPasswordValues = z.infer<typeof setPasswordSchema>
 
-interface SignUpFormProps {
+interface SetPasswordFormProps {
   onBackToSignIn: () => void
 }
 
-export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
-  const { signUp } = useAuthBackend()
+export function SetPasswordForm({ onBackToSignIn }: SetPasswordFormProps) {
+  const { setPassword } = useAuthBackend()
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<SignUpValues>({
-    resolver: zodResolver(signUpSchema),
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+  } = useForm<SetPasswordValues>({
+    resolver: zodResolver(setPasswordSchema),
     defaultValues: {
-      fullName: "",
       email: "",
+      resetToken: "",
       password: "",
       confirmPassword: "",
     },
   })
 
-  const onSubmit = async (values: SignUpValues) => {
-    await signUp({
-      fullName: values.fullName,
+  const onSubmit = async (values: SetPasswordValues) => {
+    await setPassword({
       email: values.email,
+      resetToken: values.resetToken,
       password: values.password,
     })
   }
@@ -53,43 +53,41 @@ export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="space-y-2">
-        <label htmlFor="sign-up-name" className="text-sm font-medium text-foreground">
-          Full name
-        </label>
-        <input
-          id="sign-up-name"
-          type="text"
-          placeholder="Jane Doe"
-          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
-          {...register("fullName")}
-        />
-        {errors.fullName ? (
-          <p className="text-xs text-destructive">{errors.fullName.message}</p>
-        ) : null}
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="sign-up-email" className="text-sm font-medium text-foreground">
+        <label htmlFor="set-password-email" className="text-sm font-medium text-foreground">
           Email address
         </label>
         <input
-          id="sign-up-email"
+          id="set-password-email"
           type="email"
           placeholder="you@example.com"
           className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
           {...register("email")}
         />
-        {errors.email ? (
-          <p className="text-xs text-destructive">{errors.email.message}</p>
+        {errors.email ? <p className="text-xs text-destructive">{errors.email.message}</p> : null}
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="set-password-token" className="text-sm font-medium text-foreground">
+          Reset token
+        </label>
+        <input
+          id="set-password-token"
+          type="text"
+          placeholder="Paste your reset code"
+          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+          {...register("resetToken")}
+        />
+        {errors.resetToken ? (
+          <p className="text-xs text-destructive">{errors.resetToken.message}</p>
         ) : null}
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="sign-up-password" className="text-sm font-medium text-foreground">
-          Password
+        <label htmlFor="set-password-password" className="text-sm font-medium text-foreground">
+          New password
         </label>
         <input
-          id="sign-up-password"
+          id="set-password-password"
           type="password"
           placeholder="At least 8 characters"
           className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
@@ -101,13 +99,13 @@ export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="sign-up-confirm" className="text-sm font-medium text-foreground">
-          Confirm password
+        <label htmlFor="set-password-confirm" className="text-sm font-medium text-foreground">
+          Confirm new password
         </label>
         <input
-          id="sign-up-confirm"
+          id="set-password-confirm"
           type="password"
-          placeholder="Repeat your password"
+          placeholder="Repeat your new password"
           className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
           {...register("confirmPassword")}
         />
@@ -116,18 +114,24 @@ export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
         ) : null}
       </div>
 
+      {isSubmitSuccessful ? (
+        <p className="rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-primary">
+          Password updated successfully. You can now sign in with your new password.
+        </p>
+      ) : null}
+
       <Button type="submit" className="h-11 w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Creating account..." : "Create account"}
+        {isSubmitting ? "Updating password..." : "Set password"}
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        Ready to continue?{" "}
         <button
           type="button"
           onClick={onBackToSignIn}
           className="font-semibold text-primary hover:underline"
         >
-          Sign in
+          Back to sign in
         </button>
       </p>
     </form>

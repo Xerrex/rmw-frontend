@@ -5,6 +5,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/components/ui/button"
+import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
 
 const resetPasswordSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -14,9 +15,12 @@ type ResetPasswordValues = z.infer<typeof resetPasswordSchema>
 
 interface ResetPasswordFormProps {
   onBackToSignIn: () => void
+  onSetPassword: () => void
 }
 
-export function ResetPasswordForm({ onBackToSignIn }: ResetPasswordFormProps) {
+export function ResetPasswordForm({ onBackToSignIn, onSetPassword }: ResetPasswordFormProps) {
+  const { requestPasswordReset } = useAuthBackend()
+
   const {
     register,
     handleSubmit,
@@ -29,7 +33,7 @@ export function ResetPasswordForm({ onBackToSignIn }: ResetPasswordFormProps) {
   })
 
   const onSubmit = async (values: ResetPasswordValues) => {
-    await Promise.resolve(values)
+    await requestPasswordReset(values)
   }
 
   return (
@@ -68,6 +72,17 @@ export function ResetPasswordForm({ onBackToSignIn }: ResetPasswordFormProps) {
           className="font-semibold text-primary hover:underline"
         >
           Back to sign in
+        </button>
+      </p>
+
+      <p className="text-center text-sm text-muted-foreground">
+        Already have a reset code?{" "}
+        <button
+          type="button"
+          onClick={onSetPassword}
+          className="font-semibold text-primary hover:underline"
+        >
+          Set new password
         </button>
       </p>
     </form>

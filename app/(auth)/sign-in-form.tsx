@@ -3,8 +3,10 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
+import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
 
 const signInSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -20,6 +22,9 @@ interface SignInFormProps {
 }
 
 export function SignInForm({ onForgotPassword, onSignUp }: SignInFormProps) {
+  const router = useRouter()
+  const { signIn } = useAuthBackend()
+
   const {
     register,
     handleSubmit,
@@ -34,7 +39,8 @@ export function SignInForm({ onForgotPassword, onSignUp }: SignInFormProps) {
   })
 
   const onSubmit = async (values: SignInValues) => {
-    await Promise.resolve(values)
+    await signIn(values)
+    router.push("/dashboard")
   }
 
   return (
