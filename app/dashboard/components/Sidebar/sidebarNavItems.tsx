@@ -50,7 +50,7 @@ const SidebarNavItems = {
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/dashboard/settings",
       icon: (<Settings/>),
       isActive: true,
     },
