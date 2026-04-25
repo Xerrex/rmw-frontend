@@ -26,39 +26,39 @@ const SidebarNavItems = {
   navMain: [
     {
       title: "Overview",
-      url: "#",
+      url: "/dashboard",
       icon: (<LayoutDashboard/>),
-      isActive: true,
+      // isActive: true,
     },
     {
       title: "Rides",
       url: "/dashboard/rides",
       icon: (<CarFront/>),
-      isActive: true,
+      // isActive: true,
     },
     {
       title: "Requests",
       url: "/dashboard/rides-requests",
       icon: (<Users/>),
-      isActive: true,
+      // isActive: true,
     },
     {
       title: "Analytics",
       url: "/dashboard/analytics",
       icon: (<ChartSpline/>),
-      isActive: true,
+      // isActive: true,
     },
     {
       title: "Settings",
       url: "/dashboard/settings",
       icon: (<Settings/>),
-      isActive: true,
+      // isActive: true,
     },
     {
       title: "Playground",
       url: "#",
       icon: (<TerminalSquareIcon/>),
-      isActive: true,
+      // isActive: true,
       items: [
         {
           title: "History",
@@ -66,7 +66,7 @@ const SidebarNavItems = {
         },
         {
           title: "Starred",
-          url: "#",
+          url: "#"
         },
         {
           title: "Settings",
@@ -74,25 +74,7 @@ const SidebarNavItems = {
         },
       ],
     },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: (
-        <FrameIcon
-        />
-      ),
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: (
-        <PieChartIcon
-        />
-      ),
-    },
-  ],
+  ]
 }
 
 export default SidebarNavItems;
