@@ -1,8 +1,8 @@
-import { ActivityFeedCard } from "./components/activity-feed-card"
-import { DashboardMetrics } from "./components/dashboard-metrics"
-import { DashboardQuickActions } from "./components/dashboard-quick-actions"
-import { RideRequestsCard } from "./components/ride-requests-card"
-import { UpcomingRidesCard } from "./components/upcoming-rides-card"
+import { ActivityFeedCard } from "./components/overview/activity-feed-card"
+import { DashboardMetrics } from "./components/overview/dashboard-metrics"
+import { DashboardQuickActions } from "./components/overview/dashboard-quick-actions"
+import { RideRequestsCard } from "./components/overview/ride-requests-card"
+import { UpcomingRidesCard } from "./components/overview/upcoming-rides-card"
 
 export default function DashboardPage() {
 	return (
