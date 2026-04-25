@@ -44,7 +44,7 @@ const SidebarNavItems = {
     },
     {
       title: "Analytics",
-      url: "#",
+      url: "/dashboard/analytics",
       icon: (<ChartSpline/>),
       isActive: true,
     },
