@@ -37,6 +37,12 @@ const SidebarNavItems = {
       isActive: true,
     },
     {
+      title: "Requests",
+      url: "/dashboard/rides-requests",
+      icon: (<Users/>),
+      isActive: true,
+    },
+    {
       title: "Analytics",
       url: "#",
       icon: (<ChartSpline/>),
