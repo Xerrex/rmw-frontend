@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 
-import type { RideRequest } from "./types"
+import type { RideRequest } from "../rides/hooks/types"
 
 const MOCK_RIDE_REQUESTS: RideRequest[] = [
   {

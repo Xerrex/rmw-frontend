@@ -31,15 +31,9 @@ const SidebarNavItems = {
       isActive: true,
     },
     {
-      title: "My Rides",
-      url: "#",
+      title: "Rides",
+      url: "/dashboard/rides",
       icon: (<CarFront/>),
-      isActive: true,
-    },
-    {
-      title: "Requests",
-      url: "#",
-      icon: (<Users/>),
       isActive: true,
     },
     {
