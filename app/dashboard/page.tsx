@@ -6,7 +6,7 @@ import { UpcomingRidesCard } from "./components/overview/upcoming-rides-card";
 
 export default function Page() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-background/90 px-4 backdrop-blur sm:px-6 lg:px-8">
         <div>
           <h1 className="text-lg font-semibold">Dashboard</h1>
