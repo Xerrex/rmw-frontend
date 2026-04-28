@@ -1,18 +1,19 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { Search, Users, Clock, MapPin, CheckCircle2, XCircle, Ban, Filter } from "lucide-react"
+import { Search, Users, Clock, MapPin, CheckCircle2, XCircle, Ban, ChevronRight } from "lucide-react"
 import { useRidesRequests } from "./hooks/use-rides-requests"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 
 export default function RideRequestsPage() {
+  const router = useRouter()
   const { data: requests, isLoading } = useRidesRequests()
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -39,7 +40,7 @@ export default function RideRequestsPage() {
   })
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
@@ -61,7 +62,7 @@ export default function RideRequestsPage() {
       </div>
 
       <Tabs value={statusFilter} onValueChange={setStatusFilter} className="w-full">
-        <ScrollArea className="w-full whitespace-nowrap rounded-md">
+        <ScrollArea className="w-full whitespace-nowrap">
           <TabsList className="inline-flex h-12 items-center justify-start rounded-none border-b bg-transparent p-0 w-full mb-6">
             <TabsTrigger value="all" className="relative h-12 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
               All Requests
@@ -83,84 +84,70 @@ export default function RideRequestsPage() {
               Rejected
             </TabsTrigger>
           </TabsList>
-          <ScrollBar orientation="horizontal" />
         </ScrollArea>
 
-        <div className="mt-2">
-          <Card className="border-none shadow-xl bg-card/50 backdrop-blur-md overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-2xl font-bold">Requests List</CardTitle>
-                <CardDescription>
-                  Showing {filteredRequests.length} {statusFilter !== "all" ? statusFilter : ""} requests.
-                </CardDescription>
-              </div>
-              <Badge variant="outline" className="h-6">
-                Total: {filteredRequests.length}
-              </Badge>
-            </CardHeader>
-            <CardContent className="p-0">
-              <ScrollArea className="w-full rounded-md border">
-                <Table>
-                  <TableHeader className="bg-muted/50">
-                    <TableRow>
-                      <TableHead className="pl-6">Passenger</TableHead>
-                      <TableHead>Route & Stops</TableHead>
-                      <TableHead>Seats</TableHead>
-                      <TableHead>Request Date</TableHead>
-                      <TableHead className="text-right pr-6">Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredRequests.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
-                          No requests found matching your criteria.
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      filteredRequests.map((req) => (
-                        <TableRow key={req.id} className="hover:bg-primary/5 transition-colors">
-                          <TableCell className="font-semibold pl-6">{req.passengerName}</TableCell>
-                          <TableCell>
-                            <div className="flex flex-col gap-1">
-                              <span className="font-medium text-primary text-sm">{req.route}</span>
-                              <div className="flex items-center gap-4 text-[10px] text-muted-foreground">
-                                <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" /> From: {req.pickup}</span>
-                                <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" /> To: {req.dropOff}</span>
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-1.5">
-                              <Users className="h-3.5 w-3.5 text-muted-foreground" />
-                              {req.seatsRequested}
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground text-sm">
-                            {format(new Date(req.createdAt), "MMM d, h:mm a")}
-                          </TableCell>
-                          <TableCell className="text-right pr-6">
-                            <Badge 
-                              variant={
-                                req.status === "confirmed" ? "default" : 
-                                req.status === "pending" ? "secondary" : 
-                                "destructive"
-                              }
-                              className="capitalize"
-                            >
-                              {req.status}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+          {filteredRequests.length === 0 ? (
+            <div className="h-40 flex flex-col items-center justify-center rounded-xl border-2 border-dashed text-muted-foreground bg-muted/20">
+              <Users className="h-10 w-10 mb-2 opacity-20" />
+              <p>No requests found matching your criteria.</p>
+            </div>
+          ) : (
+            filteredRequests.map((req) => (
+              <Card 
+                key={req.id} 
+                className="cursor-pointer hover:shadow-md transition-all border-none shadow-sm group relative overflow-hidden bg-white dark:bg-card"
+                onClick={() => router.push(`/dashboard/rides-requests/${req.id}`)}
+              >
+                <div className={cn(
+                  "absolute left-0 top-0 bottom-0 w-1",
+                  req.status === "confirmed" ? "bg-green-500" : 
+                  req.status === "pending" ? "bg-orange-500" : "bg-red-500"
+                )} />
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold text-lg">{req.passengerName}</h4>
+                        <Badge 
+                          variant={req.status === "confirmed" ? "default" : req.status === "pending" ? "secondary" : "destructive"}
+                          className={cn(
+                            "capitalize text-[10px] h-5 px-2",
+                            req.status === "pending" && "bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400"
+                          )}
+                        >
+                          {req.status}
+                        </Badge>
+                      </div>
+                      
+                      <div className="flex flex-col gap-1">
+                        <span className="font-medium text-primary text-sm">{req.route}</span>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Pickup: {req.pickup}</span>
+                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Drop-off: {req.dropOff}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1.5 font-medium text-foreground">
+                          <Users className="h-3.5 w-3.5 text-primary" />
+                          {req.seatsRequested} Seats
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5" />
+                          {format(new Date(req.createdAt), "MMM d, h:mm a")}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-xs font-medium">View Details</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </Tabs>
     </div>
