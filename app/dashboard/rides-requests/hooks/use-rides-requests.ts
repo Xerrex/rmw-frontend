@@ -21,6 +21,18 @@ export function useRidesRequests() {
   })
 }
 
+export function useCreateRequest() {
+  const createRequest = async (data: any) => {
+    console.log("Creating new ride request with payload:", data)
+    return Promise.resolve({ success: true, id: "req-" + Math.random().toString(36).substr(2, 9) })
+  }
+
+  return {
+    mutate: createRequest,
+    isPending: false, // Mock
+  }
+}
+
 /**
  * Mock Data
  */

@@ -6,8 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { Search, Users, Clock, MapPin, CheckCircle2, XCircle, Ban, ChevronRight } from "lucide-react"
+import { Search, Users, Clock, MapPin, CheckCircle2, XCircle, Ban, ChevronRight, Plus } from "lucide-react"
 import { useRidesRequests } from "./hooks/use-rides-requests"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
@@ -50,14 +51,20 @@ export default function RideRequestsPage() {
             Manage and track all incoming passenger requests.
           </p>
         </div>
-        <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input 
-            placeholder="Search passengers, routes..." 
-            className="pl-10 bg-background/50 backdrop-blur-sm border-primary/20 focus-visible:ring-primary"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div className="flex items-center gap-3">
+          <Button onClick={() => router.push("/dashboard/rides-requests/new")} className="gap-2 shrink-0">
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Create Request</span>
+          </Button>
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search passengers, routes..." 
+              className="pl-10 bg-background/50 backdrop-blur-sm border-primary/20 focus-visible:ring-primary"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 

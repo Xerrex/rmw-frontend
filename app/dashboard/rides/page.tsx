@@ -6,9 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { CarFront, Users, Search, Clock, MapPin, ArrowRight, ChevronRight } from "lucide-react"
+import { CarFront, Users, Search, Clock, MapPin, ArrowRight, ChevronRight, Plus, UserPlus } from "lucide-react"
 import { useRides, useAllRideRequests } from "./hooks/use-rides"
+import { CreateRideModal } from "./components/CreateRideModal"
+import { RequestRideModal } from "./components/RequestRideModal"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 
@@ -39,6 +42,11 @@ export default function RidesPage() {
     return matchesSearch && matchesStatus;
   })
 
+  // Mock: Check if user has already requested a ride
+  const hasRequested = (rideId: string) => {
+    return requests?.some(req => req.rideId === rideId)
+  }
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -50,14 +58,17 @@ export default function RidesPage() {
             Manage your rides and track their progress.
           </p>
         </div>
-        <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input 
-            placeholder="Search rides, routes..." 
-            className="pl-10 bg-background/50 backdrop-blur-sm border-primary/20 focus-visible:ring-primary"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div className="flex items-center gap-3">
+          <CreateRideModal />
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search rides, routes..." 
+              className="pl-10 bg-background/50 backdrop-blur-sm border-primary/20 focus-visible:ring-primary"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
@@ -86,6 +97,7 @@ export default function RidesPage() {
           <div className="mt-6">
             <RideList 
               data={filteredRides} 
+              hasRequested={hasRequested}
               onRideClick={(id) => router.push(`/dashboard/rides/${id}`)} 
             />
           </div>
@@ -95,7 +107,7 @@ export default function RidesPage() {
   )
 }
 
-function RideList({ data, onRideClick }: { data: any[], onRideClick: (id: string) => void }) {
+function RideList({ data, hasRequested, onRideClick }: { data: any[], hasRequested: (id: string) => boolean, onRideClick: (id: string) => void }) {
   return (
     <div className="space-y-4">
       {data.length === 0 ? (
@@ -108,48 +120,64 @@ function RideList({ data, onRideClick }: { data: any[], onRideClick: (id: string
           {data.map((ride) => (
             <Card 
               key={ride.id} 
-              className="cursor-pointer hover:shadow-md transition-all border-none shadow-sm group relative overflow-hidden bg-white dark:bg-card"
-              onClick={() => onRideClick(ride.id)}
+              className="hover:shadow-md transition-all border-none shadow-sm group relative overflow-hidden bg-white dark:bg-card"
             >
               <div className={cn(
                 "absolute left-0 top-0 bottom-0 w-1",
                 ride.status === "completed" ? "bg-green-500" : ride.status === "cancelled" ? "bg-red-500" : "bg-orange-500"
               )} />
               <CardContent className="p-4 sm:p-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-bold flex items-center gap-2">
-                        {ride.townStarting} <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" /> {ride.townEnding}
-                      </h3>
-                      <Badge 
-                        variant={ride.status === "completed" ? "default" : ride.status === "cancelled" ? "destructive" : "secondary"}
-                        className={cn(
-                          "capitalize text-[10px] h-5 px-2",
-                          ride.status === "upcoming" && "bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400"
-                        )}
-                      >
-                        {ride.status}
-                      </Badge>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg font-bold flex items-center gap-2">
+                          {ride.townStarting} <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" /> {ride.townEnding}
+                        </h3>
+                        <Badge 
+                          variant={ride.status === "completed" ? "default" : ride.status === "cancelled" ? "destructive" : "secondary"}
+                          className={cn(
+                            "capitalize text-[10px] h-5 px-2",
+                            ride.status === "upcoming" && "bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400"
+                          )}
+                        >
+                          {ride.status}
+                        </Badge>
+                      </div>
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5" />
+                          {format(new Date(ride.departTime), "MMM d, h:mm a")}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <CarFront className="h-3.5 w-3.5" />
+                          {ride.vehiclePlate}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1.5">
-                        <Clock className="h-3.5 w-3.5" />
-                        {format(new Date(ride.departTime), "MMM d, h:mm a")}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <CarFront className="h-3.5 w-3.5" />
-                        {ride.vehiclePlate}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Users className="h-3.5 w-3.5" />
-                        {ride.seats} seats
-                      </span>
-                    </div>
+                    <Button variant="ghost" size="icon" className="shrink-0" onClick={() => onRideClick(ride.id)}>
+                      <ChevronRight className="h-5 w-5" />
+                    </Button>
                   </div>
-                  <div className="flex items-center gap-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-xs font-medium">View Details</span>
-                    <ChevronRight className="h-4 w-4" />
+
+                  <div className="flex items-center justify-between mt-2 pt-4 border-t">
+                    <div className="flex items-center gap-1.5 text-sm font-medium">
+                      <Users className="h-4 w-4 text-primary" />
+                      {ride.seats} seats available
+                    </div>
+                    
+                    {!hasRequested(ride.id) && ride.status === "upcoming" ? (
+                      <RequestRideModal rideId={ride.id} rideRoute={`${ride.townStarting} to ${ride.townEnding}`}>
+                        <Button size="sm" variant="outline" className="gap-2">
+                          <UserPlus className="h-4 w-4" />
+                          Join Ride
+                        </Button>
+                      </RequestRideModal>
+                    ) : hasRequested(ride.id) ? (
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        Requested
+                      </Badge>
+                    ) : null}
                   </div>
                 </div>
               </CardContent>

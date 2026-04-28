@@ -92,3 +92,31 @@ export function useAllRideRequests() {
     queryFn: fetchRideRequests,
   })
 }
+
+export function useCreateRide() {
+  const createRide = async (data: Partial<Ride>) => {
+    console.log("Creating new ride with payload:", data)
+    return Promise.resolve({ success: true, id: "ride-" + Math.random().toString(36).substr(2, 9) })
+  }
+
+  return {
+    mutate: createRide,
+    isPending: false, // Mock
+  }
+}
+
+export function useSearchRides() {
+  const searchRides = async (params: { pickup: string; dropoff: string }) => {
+    console.log("Searching rides with params:", params)
+    // Return rides that match the route roughly
+    return Promise.resolve(MOCK_RIDES.filter(r => 
+      r.townStarting.toLowerCase().includes(params.pickup.toLowerCase()) || 
+      r.townEnding.toLowerCase().includes(params.dropoff.toLowerCase())
+    ))
+  }
+
+  return {
+    mutateAsync: searchRides,
+    isPending: false, // Mock
+  }
+}
