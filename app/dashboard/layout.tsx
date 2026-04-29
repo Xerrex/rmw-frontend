@@ -3,6 +3,7 @@ import { ThemeModeToggle } from "@/app/landing/components/theme-mode-toggle";
 import { AppSidebar } from "./components/Sidebar/app-sidebar";
 import { DynamicBreadcrumb } from "./components/breadcrumb";
 import { BreadcrumbProvider } from "./components/breadcrumb/breadcrumb-context";
+import { NotificationBell } from "./notifications/components/NotificationBell";
 
 export default function DashboardLayout({ children,}: Readonly<{children: React.ReactNode}>) {
 	return (
@@ -17,7 +18,10 @@ export default function DashboardLayout({ children,}: Readonly<{children: React.
                 <DynamicBreadcrumb />
               </div>
               
-              <ThemeModeToggle />
+              <div className="flex items-center gap-2">
+                <NotificationBell />
+                <ThemeModeToggle />
+              </div>
             </div>
 
             <main className="flex-1">{children}</main>
