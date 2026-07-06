@@ -34,7 +34,7 @@ export function AuthPanel() {
   const content = useMemo(() => authContent[view], [view])
 
   return (
-    <section className="flex h-full items-center justify-center bg-card/80 px-5 py-8 sm:px-8 lg:px-10">
+    <section className="flex min-h-[50vh] lg:h-full items-center justify-center bg-card/80 px-5 py-12 sm:px-8 lg:px-10">
       <div className="w-full max-w-md space-y-6 rounded-2xl border border-border bg-background p-6 shadow-lg sm:p-8">
         <header className="space-y-1">
           <h2 className="text-2xl font-bold text-foreground">{content.title}</h2>

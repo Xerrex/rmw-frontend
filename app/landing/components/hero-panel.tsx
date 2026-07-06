@@ -37,7 +37,7 @@ const features = [
 
 export function HeroPanel() {
   return (
-    <section className="relative flex h-full items-center overflow-hidden bg-linear-to-br from-primary via-sky-600 to-cyan-500 px-6 py-10 text-white sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+    <section className="relative flex min-h-[50vh] lg:h-full items-center overflow-hidden bg-linear-to-br from-primary via-sky-600 to-cyan-500 px-6 py-12 text-white sm:px-10 sm:py-14 lg:px-12 lg:py-14">
       <div className="absolute -left-24 top-6 size-56 rounded-full bg-white/10 blur-3xl" />
       <div className="absolute -bottom-20 right-8 size-64 rounded-full bg-cyan-300/20 blur-3xl" />
 
