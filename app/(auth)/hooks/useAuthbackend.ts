@@ -9,7 +9,9 @@ export interface SignInPayload {
 }
 
 export interface SignUpPayload {
-	fullName: string
+	// fullName: string
+	firstName:  string
+  lastName:  string
 	email: string
 	password: string
 }

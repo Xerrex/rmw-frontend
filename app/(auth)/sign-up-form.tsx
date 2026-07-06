@@ -9,7 +9,9 @@ import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
 
 const signUpSchema = z
   .object({
-    fullName: z.string().min(2, "Full name must be at least 2 characters"),
+    // fullName: z.string().min(2, "Full name must be at least 2 characters"),
+    firstName: z.string().min(2, "First name must be at least 2 characters"),
+    lastName: z.string().min(2, "Last name must be at least 2 characters"),
     email: z.string().email("Enter a valid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().min(8, "Confirm your password"),
@@ -28,14 +30,14 @@ interface SignUpFormProps {
 export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
   const { signUp } = useAuthBackend()
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
+  const { 
+    register, handleSubmit, formState: { errors, isSubmitting },
   } = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      fullName: "",
+      // fullName: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -44,7 +46,9 @@ export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
 
   const onSubmit = async (values: SignUpValues) => {
     await signUp({
-      fullName: values.fullName,
+      // fullName: values.fullName,
+      firstName: values.firstName,
+      lastName: values.lastName,
       email: values.email,
       password: values.password,
     })
@@ -52,7 +56,7 @@ export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div className="space-y-2">
+      {/* <div className="space-y-2">
         <label htmlFor="sign-up-name" className="text-sm font-medium text-foreground">
           Full name
         </label>
@@ -65,6 +69,34 @@ export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
         />
         {errors.fullName ? (
           <p className="text-xs text-destructive">{errors.fullName.message}</p>
+        ) : null}
+      </div> */}
+      <div className="space-y-2">
+        <label htmlFor="sign-up-fname" className="text-sm font-medium text-foreground">
+          First name
+        </label>
+        <input
+          id="sign-up-fname"
+          type="text"
+          placeholder="John"
+          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+          {...register("firstName")}
+        />
+        {errors.firstName ? (
+          <p className="text-xs text-destructive">{errors.firstName.message}</p>
+        ) : null}
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="sign-up-lname" className="text-sm font-medium text-foreground">
+          Last name
+        </label>
+        <input id="sign-up-lname" type="text" placeholder="Doe"
+          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
+          {...register("lastName")}
+        />
+        {errors.lastName ? (
+          <p className="text-xs text-destructive">{errors.lastName.message}</p>
         ) : null}
       </div>
 
