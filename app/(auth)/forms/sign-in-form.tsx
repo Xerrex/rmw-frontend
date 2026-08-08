@@ -4,9 +4,11 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
+import { setAccessToken, setRefreshToken } from "@/lib/tokenHandlers"
 
 const signInSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -23,7 +25,7 @@ interface SignInFormProps {
 
 export function SignInForm({ onForgotPassword, onSignUp }: SignInFormProps) {
   const router = useRouter()
-  const { signIn } = useAuthBackend()
+  const { signInAPI } = useAuthBackend()
 
   const {
     register,
@@ -39,8 +41,35 @@ export function SignInForm({ onForgotPassword, onSignUp }: SignInFormProps) {
   })
 
   const onSubmit = async (values: SignInValues) => {
-    await signIn(values)
-    router.push("/dashboard")
+
+    try {
+      const response = await signInAPI.mutateAsync({
+        email: values.email,
+        password: values.password,
+        remember: values.remember
+      })
+
+      toast.success(`Sign in successful`,
+        {
+          description: `Welcome back ${response.details.first_name}`,
+          position: "bottom-right"
+        }
+      )
+      
+      setAccessToken(response.details.token.access_token);
+      setRefreshToken(response.details.token.refresh_token);
+      
+      router.push("/dashboard")
+    } catch (error) {
+      void error
+      toast.error(`Sign in error`,
+        {
+          description: "There was an error with your sign-in details try again",
+          position: "bottom-right"
+        }
+      )
+    }
+    
   }
 
   return (

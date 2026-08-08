@@ -3,9 +3,11 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
+
+
 
 const signUpSchema = z
   .object({
@@ -28,7 +30,7 @@ interface SignUpFormProps {
 }
 
 export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
-  const { signUp } = useAuthBackend()
+  const { signUpAPI } = useAuthBackend();
 
   const { 
     register, handleSubmit, formState: { errors, isSubmitting },
@@ -45,13 +47,33 @@ export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
   })
 
   const onSubmit = async (values: SignUpValues) => {
-    await signUp({
-      // fullName: values.fullName,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      password: values.password,
-    })
+
+    try {
+      const response = await signUpAPI.mutateAsync({
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        password: values.password
+      })
+
+      toast.success(`Signed up successful ${response.details.first_name}`,
+        {
+          description: "Use your new credentials to login",
+          position: "bottom-right"
+        }
+      )
+      onBackToSignIn();
+
+    } catch (error) {
+      void error;
+      toast.error(`Sign up error ${values.firstName}`,
+        {
+          description: "There was an error with your sign-up details",
+          position: "bottom-right"
+        }
+      )
+    }
+    
   }
 
   return (

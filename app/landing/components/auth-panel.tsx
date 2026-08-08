@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from "react"
 
-import { ResetPasswordForm } from "@/app/(auth)/reset-password-form"
-import { SetPasswordForm } from "@/app/(auth)/set-password-form"
-import { SignInForm } from "@/app/(auth)/sign-in-form"
-import { SignUpForm } from "@/app/(auth)/sign-up-form"
+import { ResetPasswordForm } from "@/app/(auth)/forms/reset-password-form"
+import { SetPasswordForm } from "@/app/(auth)/forms/set-password-form"
+import { SignInForm } from "@/app/(auth)/forms/sign-in-form"
+import { SignUpForm } from "@/app/(auth)/forms/sign-up-form"
 
 type AuthView = "signin" | "reset" | "setpassword" | "signup"
 
