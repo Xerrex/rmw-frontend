@@ -26,7 +26,7 @@ interface SetPasswordFormProps {
 }
 
 export function SetPasswordForm({ onBackToSignIn }: SetPasswordFormProps) {
-  const { setPassword } = useAuthBackend()
+  const { setPasswordAPI } = useAuthBackend()
 
   const {
     register,
