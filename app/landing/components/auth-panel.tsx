@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { useSearchParams } from "next/navigation"
 
 import { ResetPasswordForm } from "@/app/(auth)/forms/reset-password-form"
 import { SetPasswordForm } from "@/app/(auth)/forms/set-password-form"
@@ -30,6 +31,8 @@ const authContent: Record<AuthView, { title: string; description: string }> = {
 
 export function AuthPanel() {
   const [view, setView] = useState<AuthView>("signin")
+  const searchParams = useSearchParams()
+  const urlToken = searchParams?.get("token") ?? undefined
 
   const content = useMemo(() => authContent[view], [view])
 
@@ -56,7 +59,10 @@ export function AuthPanel() {
         ) : null}
 
         {view === "setpassword" ? (
-          <SetPasswordForm onBackToSignIn={() => setView("signin")} />
+          <SetPasswordForm
+            onBackToSignIn={() => setView("signin")}
+            resetToken={urlToken}
+          />
         ) : null}
 
         {view === "signup" ? (

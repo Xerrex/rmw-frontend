@@ -10,7 +10,6 @@ import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
 const setPasswordSchema = z
   .object({
     email: z.string().email("Enter a valid email address"),
-    resetToken: z.string().min(6, "Reset token must be at least 6 characters"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().min(8, "Confirm your password"),
   })
@@ -23,9 +22,10 @@ type SetPasswordValues = z.infer<typeof setPasswordSchema>
 
 interface SetPasswordFormProps {
   onBackToSignIn: () => void
+  resetToken?: string
 }
 
-export function SetPasswordForm({ onBackToSignIn }: SetPasswordFormProps) {
+export function SetPasswordForm({ onBackToSignIn, resetToken }: SetPasswordFormProps) {
   const { setPasswordAPI } = useAuthBackend()
 
   const {
@@ -36,16 +36,19 @@ export function SetPasswordForm({ onBackToSignIn }: SetPasswordFormProps) {
     resolver: zodResolver(setPasswordSchema),
     defaultValues: {
       email: "",
-      resetToken: "",
       password: "",
       confirmPassword: "",
     },
   })
 
   const onSubmit = async (values: SetPasswordValues) => {
-    await setPassword({
-      email: values.email,
-      resetToken: values.resetToken,
+    if (!resetToken) {
+      console.error("Missing reset token")
+      return
+    }
+
+    await setPasswordAPI.mutateAsync({
+      resetToken,
       password: values.password,
     })
   }
@@ -67,22 +70,6 @@ export function SetPasswordForm({ onBackToSignIn }: SetPasswordFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="set-password-token" className="text-sm font-medium text-foreground">
-          Reset token
-        </label>
-        <input
-          id="set-password-token"
-          type="text"
-          placeholder="Paste your reset code"
-          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
-          {...register("resetToken")}
-        />
-        {errors.resetToken ? (
-          <p className="text-xs text-destructive">{errors.resetToken.message}</p>
-        ) : null}
-      </div>
-
-      <div className="space-y-2">
         <label htmlFor="set-password-password" className="text-sm font-medium text-foreground">
           New password
         </label>
@@ -93,9 +80,7 @@ export function SetPasswordForm({ onBackToSignIn }: SetPasswordFormProps) {
           className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
           {...register("password")}
         />
-        {errors.password ? (
-          <p className="text-xs text-destructive">{errors.password.message}</p>
-        ) : null}
+        {errors.password ? <p className="text-xs text-destructive">{errors.password.message}</p> : null}
       </div>
 
       <div className="space-y-2">
