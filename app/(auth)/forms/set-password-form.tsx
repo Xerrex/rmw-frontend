@@ -9,7 +9,6 @@ import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
 
 const setPasswordSchema = z
   .object({
-    email: z.string().email("Enter a valid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().min(8, "Confirm your password"),
   })
@@ -22,10 +21,11 @@ type SetPasswordValues = z.infer<typeof setPasswordSchema>
 
 interface SetPasswordFormProps {
   onBackToSignIn: () => void
+  onSuccess?: () => void
   resetToken?: string
 }
 
-export function SetPasswordForm({ onBackToSignIn, resetToken }: SetPasswordFormProps) {
+export function SetPasswordForm({ onBackToSignIn, onSuccess, resetToken }: SetPasswordFormProps) {
   const { setPasswordAPI } = useAuthBackend()
 
   const {
@@ -35,7 +35,6 @@ export function SetPasswordForm({ onBackToSignIn, resetToken }: SetPasswordFormP
   } = useForm<SetPasswordValues>({
     resolver: zodResolver(setPasswordSchema),
     defaultValues: {
-      email: "",
       password: "",
       confirmPassword: "",
     },
@@ -43,31 +42,35 @@ export function SetPasswordForm({ onBackToSignIn, resetToken }: SetPasswordFormP
 
   const onSubmit = async (values: SetPasswordValues) => {
     if (!resetToken) {
-      console.error("Missing reset token")
       return
     }
 
-    await setPasswordAPI.mutateAsync({
-      resetToken,
-      password: values.password,
-    })
+    try {
+      await setPasswordAPI.mutateAsync({
+        resetToken,
+        password: values.password,
+      })
+      onSuccess?.()
+    } catch (error) {
+      console.error("Failed to set password", error)
+    }
+  }
+
+  if (!resetToken) {
+    return (
+      <div className="space-y-4">
+        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          This password reset link is missing or invalid. Please request a new reset link and try again.
+        </p>
+        <Button type="button" className="h-11 w-full" onClick={onBackToSignIn}>
+          Back to sign in
+        </Button>
+      </div>
+    )
   }
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div className="space-y-2">
-        <label htmlFor="set-password-email" className="text-sm font-medium text-foreground">
-          Email address
-        </label>
-        <input
-          id="set-password-email"
-          type="email"
-          placeholder="you@example.com"
-          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
-          {...register("email")}
-        />
-        {errors.email ? <p className="text-xs text-destructive">{errors.email.message}</p> : null}
-      </div>
 
       <div className="space-y-2">
         <label htmlFor="set-password-password" className="text-sm font-medium text-foreground">
