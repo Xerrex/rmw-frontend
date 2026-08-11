@@ -15,17 +15,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
-  // const [user, setUser] = useState<User | null>(null);
 
   const { signUpAPI, signInAPI, logoutAPI,
-    requestPassResetAPI, setPasswordAPI } = useAuthBackend();
-
-  // useEffect(()=>{
-  //   if(userDetails){
-  //     setUser(userDetails);
-  //   }
-    
-  // }, []);
+    requestPassResetAPI, setPasswordAPI, userDetails,
+    isLoadingUser, refetchUser, isRefetchingUser, isErrorUser } = useAuthBackend();
 
   const signUpHandler = useCallback(async(payload: SignUpPayload)=>{
     setLoading(true);
@@ -41,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
       // else{
         // TODO: make signup failed toast
       // }
-    } catch (error) {
+    } catch {
       // TODO: make signup toast error
     } finally{
       setLoading(false);
@@ -69,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
       // else{
         // TODO: make sign in failure toast
       // }
-    } catch (error) {
+    } catch {
       // TODO: make sign in toast error
     }finally{
       setLoading(false);
@@ -101,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
       // else{
 
       // }
-    } catch (error) {
+    } catch {
       // TODO: make reset password toast error
     }finally{
       setLoading(false);
@@ -125,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
       // else{
 
       // }
-    } catch (error) {
+    } catch {
       // TODO: make reset password toast error
     }finally{
       setLoading(false);
@@ -137,9 +130,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
 
   const ctxValues = useMemo(()=>({
     loading, redirecting, signUpHandler, signInHandler,
-    logoutHandler, resetPasswordHandler, setPasswordHandler
+    logoutHandler, resetPasswordHandler, setPasswordHandler,
+    userDetails, isLoadingUser, refetchUser, isRefetchingUser, isErrorUser
   }),[ loading, redirecting, signUpHandler, signInHandler,
-    logoutHandler, resetPasswordHandler, setPasswordHandler
+    logoutHandler, resetPasswordHandler, setPasswordHandler,
+    userDetails, isLoadingUser, refetchUser, isRefetchingUser, isErrorUser
   ])
 
   return (

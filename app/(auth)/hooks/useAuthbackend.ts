@@ -6,6 +6,15 @@ import { apiCaller, noAuthApiCaller } from "@/lib/apiCaller";
 import { hasAccessToken } from "@/lib/tokenHandlers";
 
 
+export interface UserDetailsResponse{
+  id: number
+  uuid: string
+  first_name: string
+  last_name: string
+  email: string
+}
+
+
 export interface SignUpPayload { 
 	firstName:  string
   lastName:  string
@@ -90,14 +99,6 @@ export interface RefreshTokenResponse{
       token_type: string
     },
   }
-}
-
-export interface UserDetailsResponse{
-  id: number
-  uuid: string
-  first_name: string
-  last_name: string
-  email: string
 }
 
 async function logAuthCall<TPayload>(operation: string, payload: TPayload) {
