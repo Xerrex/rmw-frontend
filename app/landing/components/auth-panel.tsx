@@ -1,12 +1,14 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import { useSearchParams } from "next/navigation"
 
 import { ResetPasswordForm } from "@/app/(auth)/forms/reset-password-form"
 import { SetPasswordForm } from "@/app/(auth)/forms/set-password-form"
 import { SignInForm } from "@/app/(auth)/forms/sign-in-form"
 import { SignUpForm } from "@/app/(auth)/forms/sign-up-form"
+import { hasAccessToken } from "@/lib/tokenHandlers"
 
 type AuthView = "signin" | "reset" | "setpassword" | "signup"
 
@@ -30,10 +32,12 @@ const authContent: Record<AuthView, { title: string; description: string }> = {
 }
 
 export function AuthPanel() {
+  const router = useRouter()
   const [view, setView] = useState<AuthView>("signin")
   const searchParams = useSearchParams()
   const urlToken = searchParams?.get("token") ?? searchParams?.get("reset_token") ?? undefined
   const hasResetToken = Boolean(urlToken)
+  const hasActiveSession = hasAccessToken()
 
   useEffect(() => {
     if (hasResetToken) {
@@ -41,6 +45,12 @@ export function AuthPanel() {
       setView("setpassword")
     }
   }, [hasResetToken])
+
+  useEffect(() => {
+    if (hasActiveSession) {
+      router.replace("/dashboard")
+    }
+  }, [hasActiveSession, router])
 
   const content = useMemo(() => authContent[view], [view])
 

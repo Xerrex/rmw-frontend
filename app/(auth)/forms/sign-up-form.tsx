@@ -62,6 +62,7 @@ export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
           position: "bottom-right"
         }
       )
+
       onBackToSignIn();
 
     } catch (error) {
