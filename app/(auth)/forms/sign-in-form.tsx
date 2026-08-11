@@ -8,7 +8,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
-import { setAccessToken, setRefreshToken } from "@/lib/tokenHandlers"
+import { consumePendingReturnTo, setAccessToken, setRefreshToken } from "@/lib/tokenHandlers"
 
 const signInSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -57,9 +57,10 @@ export function SignInForm({ onForgotPassword, onSignUp }: SignInFormProps) {
       )
       
       setAccessToken(response.details.token.access_token);
-      setRefreshToken(response.details.token.refresh_token);
-      
-      router.push("/dashboard")
+      setRefreshToken();
+
+      const returnTo = consumePendingReturnTo() ?? "/dashboard"
+      router.replace(returnTo)
     } catch (error) {
       void error
       toast.error(`Sign in error`,

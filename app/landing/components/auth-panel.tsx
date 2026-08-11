@@ -37,6 +37,7 @@ export function AuthPanel() {
 
   useEffect(() => {
     if (hasResetToken) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setView("setpassword")
     }
   }, [hasResetToken])

@@ -1,25 +1,26 @@
-export const setAccessToken = (accessToken: string)=>{
-  if (typeof window === 'undefined') return;
-  localStorage.setItem('access_token', accessToken);
-}
+import axiosClient, { consumePendingReturnTo } from "./apiCaller";
 
-export const clearAccessToken = ()=>{
-  if(typeof window === 'undefined') return;
-  localStorage.removeItem('access_token');
-}
+export const setAccessToken = (accessToken: string) => {
+  axiosClient.setAuthToken(accessToken);
+};
 
-export const setRefreshToken = (refreshToken: string) =>{
-  if(typeof window === 'undefined') return;
-  localStorage.setItem('refresh_token', refreshToken);
-}
+export const hasAccessToken = () => axiosClient.hasAuthToken();
 
-export const clearRefreshToken = ()=>{
-  if(typeof window === 'undefined') return;
-  localStorage.removeItem('refresh_token');
-}
+export { consumePendingReturnTo };
 
-export const clearTokens = ()=>{
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem('access_token');
-  localStorage.removeItem('refresh_token');
+export const clearAccessToken = () => {
+  axiosClient.removeAuthToken();
+};
+
+export const setRefreshToken = () => {
+  // The refresh token is issued by the backend as an HttpOnly cookie,
+  // so it should not be stored in browser storage.
+};
+
+export const clearRefreshToken = () => {
+  axiosClient.removeAuthToken();
+};
+
+export const clearTokens = () => {
+  axiosClient.removeAuthToken();
 }

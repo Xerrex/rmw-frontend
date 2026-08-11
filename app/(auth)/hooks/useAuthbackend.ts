@@ -2,7 +2,8 @@
 
 // import { useCallback } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { noAuthApiCaller } from "@/lib/apiCaller";
+import { apiCaller, noAuthApiCaller } from "@/lib/apiCaller";
+import { hasAccessToken } from "@/lib/tokenHandlers";
 
 
 export interface SignUpPayload { 
@@ -139,10 +140,8 @@ export function useAuthBackend() {
   })
 
   const refreshAccessToken = useMutation<RefreshTokenResponse, Error, RefreshTokenPayload>({
-    mutationFn: async({refresh_token})=>{
-      const response = await noAuthApiCaller.post<RefreshTokenResponse>('/auth/refresh',{
-        refresh_token: refresh_token
-      });
+    mutationFn: async()=>{
+      const response = await noAuthApiCaller.post<RefreshTokenResponse>('/auth/refresh');
 
       return response.data as RefreshTokenResponse
     }
@@ -150,7 +149,7 @@ export function useAuthBackend() {
 
   const logout = useMutation({
     mutationFn: async()=>{
-      await noAuthApiCaller.post('/auth/logout');
+      await apiCaller.post('/auth/logout');
     },
     onSuccess: () => {
       queryClient.clear();
@@ -188,12 +187,12 @@ export function useAuthBackend() {
     isRefetching: isRefetchingUser, isError: isErrorUser} = useQuery<UserDetailsResponse>({
     queryKey: ['user', 'profile'],
     queryFn: async ()=>{ // TODO: Change to authAPICaller
-      const response =  await noAuthApiCaller.get<UserDetailsResponse>("/auth/me");
+      const response =  await apiCaller.get<UserDetailsResponse>("/auth/me");
       return response.data as UserDetailsResponse
     },
     placeholderData: ()=> queryClient.getQueryData<UserDetailsResponse>(['user', 'profile']),
     staleTime:  1000 * 60 * 5, // 5 minutes
-    // enabled: enabled
+    enabled: hasAccessToken(),
   })
 
 

@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { BACKEND_API_URL } from "@/config";
 
 const REQUEST_TIMEOUT_MS = 60000; // 1 minute in milliseconds
+const PENDING_RETURN_TO_KEY = "rmw-auth:return-to";
 
 
 
@@ -27,11 +28,41 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _skipAuth?: boolean; // Skip adding auth header for public endpoints
 }
 
+const getCurrentPath = () => {
+  if (typeof window === "undefined") {
+    return "/";
+  }
+
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+};
+
+export const setPendingReturnTo = (returnTo: string) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.sessionStorage.setItem(PENDING_RETURN_TO_KEY, returnTo);
+};
+
+export const consumePendingReturnTo = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const returnTo = window.sessionStorage.getItem(PENDING_RETURN_TO_KEY);
+  if (returnTo) {
+    window.sessionStorage.removeItem(PENDING_RETURN_TO_KEY);
+  }
+
+  return returnTo;
+};
+
 
 
 export const noAuthApiCaller = axios.create({
   baseURL: BACKEND_API_URL,
   timeout: REQUEST_TIMEOUT_MS,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -40,6 +71,7 @@ export const noAuthApiCaller = axios.create({
 
 class AxiosClient {
   private client: AxiosInstance;
+  private accessToken: string | null = null;
   private isRefreshing = false;
   private failedQueue: Array<{
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,7 +84,8 @@ class AxiosClient {
   constructor(baseURL: string = BACKEND_API_URL) {
     this.client = axios.create({
       baseURL,
-      timeout:  REQUEST_TIMEOUT_MS,
+      timeout: REQUEST_TIMEOUT_MS,
+      withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -70,7 +103,7 @@ class AxiosClient {
           return config;
         }
 
-        const token = this.getAccessToken();
+        const token = this.accessToken;
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -105,30 +138,29 @@ class AxiosClient {
         this.isRefreshing = true;
 
         try {
-          const refreshToken = this.getRefreshToken();
-          if (!refreshToken) {
-            throw new Error('No refresh token available');
+          const response = await this.refreshAccessToken();
+          const accessToken = response.details?.token?.access_token;
+
+          if (!accessToken) {
+            throw new Error('No access token in refresh response');
           }
 
-          const response = await this.refreshAccessToken(refreshToken);
-          const { access_token, refresh_token } = response;
-
-          this.setTokens(access_token, refresh_token);
+          this.setAuthToken(accessToken);
           this.processQueue(null);
 
           // Retry original request with new token
           if (originalConfig.headers) {
-            originalConfig.headers.Authorization = `Bearer ${access_token}`;
+            originalConfig.headers.Authorization = `Bearer ${accessToken}`;
           }
           return this.client(originalConfig);
         } catch (refreshError) {
           this.processQueue(refreshError);
           this.clearTokens();
-          
-          // Redirect to login
+
           if (typeof window !== 'undefined') {
+            setPendingReturnTo(getCurrentPath());
             toast.error('Session expired. Please login again.');
-            window.location.href = '/auth/login';
+            window.location.replace('/');
           }
           return Promise.reject(refreshError);
         } finally {
@@ -138,39 +170,17 @@ class AxiosClient {
     );
   }
 
-  private async refreshAccessToken(refreshToken: string): Promise<TokenResponse> {
-    const response = await axios.post<RefreshResponse>(
-      `${this.client.defaults.baseURL}/auth/refresh`,
-      { refresh_token: refreshToken }
-    );
+  private async refreshAccessToken(): Promise<RefreshResponse> {
+    const response = await this.client.post<RefreshResponse>('/auth/refresh', undefined, {
+      _skipAuth: true,
+    } as CustomAxiosRequestConfig);
 
-    if (!response.data.details.token) {
-      throw new Error('No token in refresh response');
-    }
-
-    return response.data.details.token;
-  }
-
-  private getAccessToken(): string | null {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('access_token');
-  }
-
-  private getRefreshToken(): string | null {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('refresh_token');
-  }
-
-  private setTokens(accessToken: string, refreshToken: string): void {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem('access_token', accessToken);
-    localStorage.setItem('refresh_token', refreshToken);
+    return response.data;
   }
 
   private clearTokens(): void {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    this.accessToken = null;
+    delete this.client.defaults.headers.common['Authorization'];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -192,11 +202,17 @@ class AxiosClient {
     return this.client;
   }
 
+  public hasAuthToken(): boolean {
+    return Boolean(this.accessToken);
+  }
+
   public setAuthToken(token: string): void {
+    this.accessToken = token;
     this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 
   public removeAuthToken(): void {
+    this.accessToken = null;
     delete this.client.defaults.headers.common['Authorization'];
   }
 
@@ -209,7 +225,7 @@ class AxiosClient {
       this.clearTokens();
       this.removeAuthToken();
       if (typeof window !== 'undefined') {
-        window.location.href = '/auth/login';
+        window.location.replace('/');
       }
     }
   }
