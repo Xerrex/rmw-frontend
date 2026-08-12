@@ -8,7 +8,7 @@ import { ResetPasswordForm } from "@/app/(auth)/forms/reset-password-form"
 import { SetPasswordForm } from "@/app/(auth)/forms/set-password-form"
 import { SignInForm } from "@/app/(auth)/forms/sign-in-form"
 import { SignUpForm } from "@/app/(auth)/forms/sign-up-form"
-import { hasAccessToken } from "@/lib/tokenHandlers"
+import { useAuthContext } from "@/app/(auth)/AuthContext"
 
 type AuthView = "signin" | "reset" | "setpassword" | "signup"
 
@@ -33,11 +33,12 @@ const authContent: Record<AuthView, { title: string; description: string }> = {
 
 export function AuthPanel() {
   const router = useRouter()
+  const { isAuthenticated, loading } = useAuthContext()
   const [view, setView] = useState<AuthView>("signin")
   const searchParams = useSearchParams()
   const urlToken = searchParams?.get("token") ?? searchParams?.get("reset_token") ?? undefined
   const hasResetToken = Boolean(urlToken)
-  const hasActiveSession = hasAccessToken()
+  const shouldShowLoadingGate = loading && !hasResetToken
 
   useEffect(() => {
     if (hasResetToken) {
@@ -47,12 +48,27 @@ export function AuthPanel() {
   }, [hasResetToken])
 
   useEffect(() => {
-    if (hasActiveSession) {
+    if (!loading && isAuthenticated) {
       router.replace("/dashboard")
     }
-  }, [hasActiveSession, router])
+  }, [isAuthenticated, loading, router])
 
   const content = useMemo(() => authContent[view], [view])
+
+  if (shouldShowLoadingGate) {
+    return (
+      <section className="flex min-h-[50vh] lg:h-full items-center justify-center bg-card/80 px-5 py-12 sm:px-8 lg:px-10">
+        <div className="w-full max-w-md space-y-4 rounded-2xl border border-border bg-background p-6 shadow-lg sm:p-8">
+          <div className="h-6 w-36 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-full animate-pulse rounded bg-muted" />
+          <div className="h-4 w-5/6 animate-pulse rounded bg-muted" />
+          <div className="h-11 w-full animate-pulse rounded-lg bg-muted" />
+          <div className="h-11 w-full animate-pulse rounded-lg bg-muted" />
+          <div className="h-11 w-full animate-pulse rounded-lg bg-muted" />
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="flex min-h-[50vh] lg:h-full items-center justify-center bg-card/80 px-5 py-12 sm:px-8 lg:px-10">

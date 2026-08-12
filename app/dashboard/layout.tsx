@@ -4,34 +4,31 @@ import { AppSidebar } from "./components/Sidebar/app-sidebar";
 import { DynamicBreadcrumb } from "./components/breadcrumb";
 import { BreadcrumbProvider } from "./components/breadcrumb/breadcrumb-context";
 import { NotificationBell } from "./notifications/components/NotificationBell";
-import { AuthProvider } from "@/app/(auth)/AuthContext";
 
 export default function DashboardLayout({ children,}: Readonly<{children: React.ReactNode}>) {
 	return (
     <BreadcrumbProvider>
-      <AuthProvider>
-        <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset>
-            <div className="flex flex-col gap-4 p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <SidebarTrigger className="-ml-1" />
-                  <DynamicBreadcrumb />
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <NotificationBell />
-                  <ThemeModeToggle />
-                </div>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <div className="flex flex-col gap-4 p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <SidebarTrigger className="-ml-1" />
+                <DynamicBreadcrumb />
               </div>
 
-              <main className="flex-1">{children}</main>
-
+              <div className="flex items-center gap-2">
+                <NotificationBell />
+                <ThemeModeToggle />
+              </div>
             </div>
-          </SidebarInset>
-        </SidebarProvider>
-      </AuthProvider>
+
+            <main className="flex-1">{children}</main>
+
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
     </BreadcrumbProvider>
 	)
 }

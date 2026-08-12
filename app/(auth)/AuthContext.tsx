@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useState, useMemo, useCallback, useContext } from "react";
+import { createContext, useState, useMemo, useCallback, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SignUpPayload, SignUpResponse, SignInPayload, SignInResponse, RefreshTokenResponse,
@@ -36,6 +36,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   const [loading, setLoading] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => hasAccessToken() ?? false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const bootstrapAuth = async () => {
+      // If token already exists in memory, skip refresh bootstrap.
+      if (hasAccessToken()) {
+        if (isMounted) {
+          setIsAuthenticated(true);
+          setLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const response = await noAuthApiCaller.post<RefreshTokenResponse>("/auth/refresh");
+        const accessToken = response.data.details?.token?.access_token;
+
+        if (response.data.details?.success && accessToken) {
+          setAccessToken(accessToken);
+          if (isMounted) {
+            setIsAuthenticated(true);
+          }
+        } else {
+          clearTokens();
+          if (isMounted) {
+            setIsAuthenticated(false);
+          }
+        }
+      } catch (error) {
+        void error;
+        clearTokens();
+        if (isMounted) {
+          setIsAuthenticated(false);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void bootstrapAuth();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const { details: user } = UserData(isAuthenticated);
 
@@ -139,10 +187,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
     setLoading(true);
     try {
       const response = await noAuthApiCaller.post<RefreshTokenResponse>('/auth/refresh');
+      const accessToken = response.data.details?.token?.access_token;
+      if (response.data.details?.success && accessToken) {
+        setAccessToken(accessToken);
+        setIsAuthenticated(true);
+      } else {
+        clearTokens();
+        setIsAuthenticated(false);
+      }
       setLoading(false);
       return response.data as RefreshTokenResponse
     } catch (error) {
       void error;
+      clearTokens();
+      setIsAuthenticated(false);
       return null;
     }finally{
       setLoading(false);
