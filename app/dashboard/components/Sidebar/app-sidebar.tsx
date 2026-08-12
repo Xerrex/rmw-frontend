@@ -18,8 +18,7 @@ type DashboardUser = {
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useAuthContext();
-  console.log("user", user);
+  const { user, logoutHandler } = useAuthContext();
 
   const dashboardUser: DashboardUser = {
     name: user ? `${user.first_name} ${user.last_name}`.trim() : SidebarNavItems.user.name,
@@ -36,7 +35,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={SidebarNavItems.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={dashboardUser} />
+        <NavUser user={dashboardUser} onLogout={logoutHandler} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { SignUpPayload, SignUpResponse, SignInPayload, SignInResponse, RefreshTokenResponse,
   ResetPasswordPayload, ResetPasswordResponse, SetPasswordPayload, SetPasswordResponse} from "./types";
 import { apiCaller, noAuthApiCaller } from "@/lib/apiCaller";
-import { consumePendingReturnTo, setAccessToken, setRefreshToken, hasAccessToken} from "@/lib/tokenHandlers";
+import { consumePendingReturnTo, setAccessToken, setRefreshToken, hasAccessToken, clearTokens } from "@/lib/tokenHandlers";
 import { UserData } from "./hooks/useAuthbackend";
 
 
@@ -35,9 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
-  const isAuthenticated =  useMemo(()=>{
-    return hasAccessToken() ?? false;
-  }, [])
+  const [isAuthenticated, setIsAuthenticated] = useState(() => hasAccessToken() ?? false);
 
   const { details: user } = UserData(isAuthenticated);
 
@@ -109,6 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
       )
         setAccessToken(response.data.details.token.access_token);
         setRefreshToken();
+        setIsAuthenticated(true);
         const returnTo = consumePendingReturnTo() ?? "/dashboard"
         router.replace(returnTo)
         setRedirecting(true)
@@ -155,8 +154,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
     setLoading(true);
     try {
       await apiCaller.post('/auth/logout');
+      clearTokens();
+      setIsAuthenticated(false);
       setLoading(false);
-      // TODO: Clear tokens
       router.push("/");
       setRedirecting(true);
     } catch (error) {
@@ -167,7 +167,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
           position: "bottom-right"
         }
       )
-      // TODO: Clear tokens
+      clearTokens();
+      setIsAuthenticated(false);
       router.push("/");
     }finally{
       setLoading(false);
