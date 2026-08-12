@@ -1,0 +1,66 @@
+export const MOCK_RIDES = [
+  {
+    id: 1,
+    vehicle_plate: "KBA 123A",
+    seats: 4,
+    town_starting: "Nairobi",
+    town_ending: "Nakuru",
+    depart_time: "2026-04-26T08:00:00Z",
+    end_time: "2026-04-26T11:00:00Z",
+    // status: "upcoming",
+  },
+  {
+    id: 2,
+    vehicle_plate: "KBB 456B",
+    seats: 3,
+    townStarting: "Mombasa",
+    townEnding: "Nairobi",
+    departTime: "2026-04-25T06:00:00Z",
+    endTime: "2026-04-25T14:00:00Z",
+    status: "completed",
+  },
+  {
+    id: "ride-3",
+    vehiclePlate: "KBC 789C",
+    seats: 2,
+    townStarting: "Kisumu",
+    townEnding: "Eldoret",
+    departTime: "2026-04-27T09:00:00Z",
+    endTime: "2026-04-27T12:00:00Z",
+    status: "cancelled",
+  },
+]
+
+
+export const MOCK_RIDE_REQUESTS = [
+  {
+    id: "req-1",
+    rideId: "ride-1",
+    passengerName: "John Doe",
+    seatsRequested: 1,
+    pickup: "Westlands",
+    dropOff: "Kenyatta Avenue",
+    route: "Westlands -> CBD",
+    status: "pending",
+  },
+  {
+    id: "req-2",
+    rideId: "ride-1",
+    passengerName: "Jane Smith",
+    seatsRequested: 2,
+    pickup: "South C",
+    dropOff: "Upper Hill",
+    route: "South C -> Upper Hill",
+    status: "rejected",
+  },
+  {
+    id: "req-3",
+    rideId: "ride-2",
+    passengerName: "Alice Kamau",
+    seatsRequested: 1,
+    pickup: "Pangani",
+    dropOff: "Ngara",
+    route: "Pangani -> Ngara",
+    status: "cancelled",
+  },
+]

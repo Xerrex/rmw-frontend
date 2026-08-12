@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { useCreateRide } from "../hooks/use-rides"
+import { useCreateRide } from "../hooks/use-rides-data"
 import { Loader2, Plus, CarFront, MapPin, Clock } from "lucide-react"
 
 const schema = z.object({

@@ -8,7 +8,7 @@ import { Step1Locations } from "./components/Step1Locations"
 import { Step2MatchingRides } from "./components/Step2MatchingRides"
 import { Step3RequestDetails } from "./components/Step3RequestDetails"
 import { SummaryPanel } from "./components/SummaryPanel"
-import { useSearchRides } from "../../rides/hooks/use-rides"
+import { useSearchRides } from "../../rides/hooks/use-rides-data"
 import { useCreateRequest } from "../hooks/use-rides-requests"
 
 export default function NewRideRequestPage() {
