@@ -79,7 +79,7 @@ export function AuthPanel() {
         {view === "setpassword" ? (
           <SetPasswordForm
             onBackToSignIn={() => setView("signin")}
-            onSuccess={() => setView("signin")}
+            // onSuccess={() => setView("signin")}
             resetToken={urlToken}
           />
         ) : null}

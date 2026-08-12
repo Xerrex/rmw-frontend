@@ -85,7 +85,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
       setRedirecting(false);
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const signInHandler = useCallback(async(payload: SignInPayload)=>{
@@ -254,7 +253,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
       setRedirecting(false);
     }
   
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const ctxValues = useMemo(()=>({
@@ -274,7 +272,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   )
 }
 
-export function useAuth(){
+export function useAuthContext(){
   const context = useContext(AuthContext);
   if(!context){
     throw new Error("Usage of auth context must be within the Auth Context")

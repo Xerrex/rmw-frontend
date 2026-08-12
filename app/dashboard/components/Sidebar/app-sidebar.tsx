@@ -8,7 +8,7 @@ import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./team-switcher";
 import SidebarNavItems from "./sidebarNavItems";
-import { useAuth } from "@/app/(auth)/AuthContext";
+import { useAuthContext } from "@/app/(auth)/AuthContext";
 
 type DashboardUser = {
   name: string
@@ -18,11 +18,12 @@ type DashboardUser = {
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { userDetails } = useAuth();
+  const { user } = useAuthContext();
+  console.log("user", user);
 
   const dashboardUser: DashboardUser = {
-    name: userDetails ? `${userDetails.first_name} ${userDetails.last_name}`.trim() : SidebarNavItems.user.name,
-    email: userDetails?.email ?? SidebarNavItems.user.email,
+    name: user ? `${user.first_name} ${user.last_name}`.trim() : SidebarNavItems.user.name,
+    email: user?.email ?? SidebarNavItems.user.email,
     avatar: SidebarNavItems.user.avatar,
   };
 

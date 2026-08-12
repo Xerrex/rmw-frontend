@@ -1,5 +1,6 @@
 import { Geist_Mono, Inter } from "next/font/google";
 import { Providers } from "@/providers";
+import { AuthProvider } from "./(auth)/AuthContext";
 import "./globals.css"
 import { cn } from "@/lib/utils";
 
@@ -22,7 +23,9 @@ export default function RootLayout({
       className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}>
       <body>
         <Providers>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </Providers>
       </body>
     </html>

@@ -12,7 +12,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <TooltipProvider>
           {children}
         </TooltipProvider>
-        <Toaster />
+        <Toaster position='bottom-right'/>
       </ThemeProvider>
     </QueryProvider>
   );

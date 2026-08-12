@@ -4,8 +4,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
-import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
+import { useAuthContext } from "../AuthContext"
 
 
 
@@ -30,7 +29,7 @@ interface SignUpFormProps {
 }
 
 export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
-  const { signUpAPI } = useAuthBackend();
+  const { signUpHandler} = useAuthContext();
 
   const { 
     register, handleSubmit, formState: { errors, isSubmitting },
@@ -47,53 +46,11 @@ export function SignUpForm({ onBackToSignIn }: SignUpFormProps) {
   })
 
   const onSubmit = async (values: SignUpValues) => {
-
-    try {
-      const response = await signUpAPI.mutateAsync({
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password
-      })
-
-      toast.success(`Signed up successful ${response.details.first_name}`,
-        {
-          description: "Use your new credentials to login",
-          position: "bottom-right"
-        }
-      )
-
-      onBackToSignIn();
-
-    } catch (error) {
-      void error;
-      toast.error(`Sign up error ${values.firstName}`,
-        {
-          description: "There was an error with your sign-up details",
-          position: "bottom-right"
-        }
-      )
-    }
-    
+    await signUpHandler(values, onBackToSignIn);
   }
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
-      {/* <div className="space-y-2">
-        <label htmlFor="sign-up-name" className="text-sm font-medium text-foreground">
-          Full name
-        </label>
-        <input
-          id="sign-up-name"
-          type="text"
-          placeholder="Jane Doe"
-          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30"
-          {...register("fullName")}
-        />
-        {errors.fullName ? (
-          <p className="text-xs text-destructive">{errors.fullName.message}</p>
-        ) : null}
-      </div> */}
       <div className="space-y-2">
         <label htmlFor="sign-up-fname" className="text-sm font-medium text-foreground">
           First name

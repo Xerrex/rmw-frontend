@@ -3,9 +3,8 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button"
-import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
+import { useAuthContext } from "../AuthContext";
 
 const resetPasswordSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -19,7 +18,7 @@ interface ResetPasswordFormProps {
 }
 
 export function ResetPasswordForm({ onBackToSignIn, onSetPassword }: ResetPasswordFormProps) {
-  const { requestPassResetAPI } = useAuthBackend()
+  const { resetPasswordHandler} = useAuthContext();
 
   const {
     register,
@@ -33,23 +32,7 @@ export function ResetPasswordForm({ onBackToSignIn, onSetPassword }: ResetPasswo
   })
 
   const onSubmit = async (values: ResetPasswordValues) => {
-    try {
-      await requestPassResetAPI.mutateAsync({
-        email: values.email
-      })
-      toast.success("Password reset request",{
-        description: `Check your email for further instructions`,
-        position: "bottom-right"
-      })
-    } catch (error) {
-      void error
-      toast.error(`Password reset request`,
-        {
-          description: "There was an error with your password reset request, try again",
-          position: "bottom-right"
-        }
-      )
-    }
+    await resetPasswordHandler(values);
   }
 
   return (

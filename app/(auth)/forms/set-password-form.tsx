@@ -5,7 +5,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/components/ui/button"
-import { useAuthBackend } from "@/app/(auth)/hooks/useAuthbackend"
+import { useAuthContext } from "../AuthContext"
 
 const setPasswordSchema = z
   .object({
@@ -21,12 +21,12 @@ type SetPasswordValues = z.infer<typeof setPasswordSchema>
 
 interface SetPasswordFormProps {
   onBackToSignIn: () => void
-  onSuccess?: () => void
+  // onSuccess?: () => void
   resetToken?: string
 }
 
-export function SetPasswordForm({ onBackToSignIn, onSuccess, resetToken }: SetPasswordFormProps) {
-  const { setPasswordAPI } = useAuthBackend()
+export function SetPasswordForm({ onBackToSignIn, resetToken }: SetPasswordFormProps) {
+  const {setPasswordHandler} = useAuthContext();
 
   const {
     register,
@@ -45,15 +45,10 @@ export function SetPasswordForm({ onBackToSignIn, onSuccess, resetToken }: SetPa
       return
     }
 
-    try {
-      await setPasswordAPI.mutateAsync({
-        resetToken,
-        password: values.password,
-      })
-      onSuccess?.()
-    } catch (error) {
-      console.error("Failed to set password", error)
-    }
+    await setPasswordHandler({
+      resetToken:  resetToken, 
+      password: values.password
+    }, onBackToSignIn)
   }
 
   if (!resetToken) {
