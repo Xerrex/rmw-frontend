@@ -1,24 +1,39 @@
 "use client"
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod/v4"
+import { toast } from "sonner"
 import { Dialog, DialogContent,  DialogDescription, DialogHeader,
   DialogTitle, DialogTrigger, DialogFooter,} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { useCreateRide } from "../hooks/use-rides-data"
+import { DateTimePicker } from "./DateTimePicker"
 import { Loader2, Plus, CarFront, MapPin, Clock } from "lucide-react"
 
 const schema = z.object({
   vehiclePlate: z.string().min(1, "Vehicle plate is required"),
+  vehicleModel: z.string().min(1, "Vehicle model is required"),
   seats: z.coerce.number().min(1, "At least 1 seat required"),
   townStarting: z.string().min(1, "Starting town is required"),
   townEnding: z.string().min(1, "Destination is required"),
-  departTime: z.string().min(1, "Departure time is required"),
-  endTime: z.string().min(1, "Estimated arrival time is required"),
+  departTime: z.date().optional(),
+  endTime: z.date().optional(),
+}).superRefine((data, ctx) => {
+  if (!data.departTime) {
+    ctx.addIssue({ code: "custom", message: "Departure time is required", path: ["departTime"] })
+  } else if (data.departTime < new Date()) {
+    ctx.addIssue({ code: "custom", message: "Departure time cannot be in the past", path: ["departTime"] })
+  }
+
+  if (!data.endTime) {
+    ctx.addIssue({ code: "custom", message: "Estimated arrival time is required", path: ["endTime"] })
+  } else if (data.departTime && data.endTime <= data.departTime) {
+    ctx.addIssue({ code: "custom", message: "Estimated arrival must be after departure time", path: ["endTime"] })
+  }
 })
 
 type FormValues = z.input<typeof schema>
@@ -32,27 +47,43 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
   const [open, setOpen] = useState(false)
   const { createRide, isCreating } = useCreateRide()
 
-  const { register, handleSubmit, reset, formState: { errors },
+  const { register, handleSubmit, reset, control, formState: { errors },
   } = useForm<FormValues, unknown, ValidatedFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       vehiclePlate: "",
+      vehicleModel: "",
       seats: 3,
       townStarting: "",
       townEnding: "",
-      departTime: "",
-      endTime: "",
+      departTime: undefined,
+      endTime: undefined,
     },
   })
 
   async function onSubmit(values: ValidatedFormValues) {
-    await createRide(values)
-    setOpen(false)
-    reset()
+    try {
+      await createRide({
+        ...values,
+        departTime: values.departTime!.toISOString(),
+        endTime: values.endTime!.toISOString(),
+      })
+      toast.success("Ride created successfully")
+      setOpen(false)
+      reset()
+    } catch {
+      toast.error("Failed to create ride. Please try again.")
+    }
+  }
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (isCreating) return
+    setOpen(nextOpen)
+    if (!nextOpen) reset()
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {children ?? (
           <Button className="gap-2 shrink-0">
@@ -61,7 +92,10 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-125">
+      <DialogContent
+        className="sm:max-w-125"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <CarFront className="h-5 w-5 text-primary" /> New Trip
@@ -72,7 +106,7 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 pt-2">
-          {/* Vehicle & Seats */}
+          {/* Vehicle & Model */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="vehiclePlate">Vehicle Plate</Label>
@@ -82,12 +116,21 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
               )}
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="seats">Available Seats</Label>
-              <Input id="seats" type="number" min={1} {...register("seats")} />
-              {errors.seats && (
-                <p className="text-xs text-destructive">{errors.seats.message}</p>
+              <Label htmlFor="vehicleModel">Vehicle Model</Label>
+              <Input id="vehicleModel" placeholder="Nissan Note" {...register("vehicleModel")} />
+              {errors.vehicleModel && (
+                <p className="text-xs text-destructive">{errors.vehicleModel.message}</p>
               )}
             </div>
+          </div>
+
+          {/* Seats */}
+          <div className="space-y-1.5">
+            <Label htmlFor="seats">Available Seats</Label>
+            <Input id="seats" type="number" min={1} {...register("seats")} />
+            {errors.seats && (
+              <p className="text-xs text-destructive">{errors.seats.message}</p>
+            )}
           </div>
 
           {/* Route */}
@@ -118,7 +161,19 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
               <Label htmlFor="departTime" className="flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5" /> Departure
               </Label>
-              <Input id="departTime" type="datetime-local" {...register("departTime")} />
+              <Controller
+                name="departTime"
+                control={control}
+                render={({ field }) => (
+                  <DateTimePicker
+                    id="departTime"
+                    value={field.value}
+                    onChange={field.onChange}
+                    minDate={new Date()}
+                    placeholder="Pick departure"
+                  />
+                )}
+              />
               {errors.departTime && (
                 <p className="text-xs text-destructive">{errors.departTime.message}</p>
               )}
@@ -127,7 +182,19 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
               <Label htmlFor="endTime" className="flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5 opacity-50" /> Est. Arrival
               </Label>
-              <Input id="endTime" type="datetime-local" {...register("endTime")} />
+              <Controller
+                name="endTime"
+                control={control}
+                render={({ field }) => (
+                  <DateTimePicker
+                    id="endTime"
+                    value={field.value}
+                    onChange={field.onChange}
+                    minDate={new Date()}
+                    placeholder="Pick arrival"
+                  />
+                )}
+              />
               {errors.endTime && (
                 <p className="text-xs text-destructive">{errors.endTime.message}</p>
               )}
@@ -135,7 +202,7 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" disabled={isCreating} onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button type="submit" disabled={isCreating}>

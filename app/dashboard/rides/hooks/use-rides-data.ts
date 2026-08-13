@@ -44,6 +44,7 @@ export function useCreateRide() {
     mutationFn: async (payload:CreateRidePayload)=>{
       const response = await apiCaller.post<CreateRideResponse>("/rides", {
         vehicle_plate: payload.vehiclePlate,
+        vehicle_model: payload.vehicleModel,
         seats: payload.seats,
         town_starting: payload.townStarting,
         town_ending: payload.townEnding,

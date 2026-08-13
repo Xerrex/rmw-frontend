@@ -2,17 +2,16 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent} from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { CarFront, Users, Search, Clock, MapPin, ArrowRight, ChevronRight, Plus, UserPlus } from "lucide-react"
+import { CarFront, Users, Search, Clock, ArrowRight, ChevronRight, UserPlus } from "lucide-react"
 import { useRides } from "./hooks/use-rides-data"
 import { CreateRideModal } from "./components/CreateRideModal"
 import { RequestRideModal } from "./components/RequestRideModal"
-import { format } from "date-fns"
+import { format, parse } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Ride } from "./hooks/types"
 
@@ -48,9 +47,9 @@ export default function RidesPage() {
       r.town_ending.toLowerCase().includes(searchQuery.toLowerCase()) ||
       r.vehicle_plate.toLowerCase().includes(searchQuery.toLowerCase());
     
-    // const matchesStatus = statusFilter === "all" || r.status === statusFilter;
+    const matchesStatus = statusFilter === "all" || r.status === statusFilter;
     // TODO: setup searching and filtering. search current before going inside.
-    return matchesSearch;
+    return matchesSearch && matchesStatus;
   })
 
   // Mock: Check if user has already requested a ride
@@ -136,7 +135,7 @@ function RideList({ data, hasRequested, onRideClick }: { data: Ride[], hasReques
             >
               <div className={cn(
                 "absolute left-0 top-0 bottom-0 w-1",
-                ride.status === "completed" ? "bg-green-500" : ride.status === "cancelled" ? "bg-red-500" : "bg-orange-500"
+                ride.status === "completed" ? "bg-green-500" : ride.status === "canceled" ? "bg-red-500" : "bg-orange-500"
               )} />
               <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col gap-4">
@@ -147,7 +146,7 @@ function RideList({ data, hasRequested, onRideClick }: { data: Ride[], hasReques
                           {ride.town_starting} <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" /> {ride.town_ending}
                         </h3>
                         <Badge 
-                          variant={ride.status === "completed" ? "default" : ride.status === "cancelled" ? "destructive" : "secondary"}
+                          variant={ride.status === "completed" ? "default" : ride.status === "canceled" ? "destructive" : "secondary"}
                           className={cn(
                             "capitalize text-[10px] h-5 px-2",
                             ride.status === "upcoming" && "bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400"
@@ -159,7 +158,7 @@ function RideList({ data, hasRequested, onRideClick }: { data: Ride[], hasReques
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5" />
-                          {format(new Date(ride.depart_time), "MMM d, h:mm a")}
+                          {format(parse(ride.depart_time, 'dd-MM-yyyy HH:mm', new Date()), "dd-MM-yyyy HH:mm")}
                         </span>
                         <span className="flex items-center gap-1.5">
                           <CarFront className="h-3.5 w-3.5" />

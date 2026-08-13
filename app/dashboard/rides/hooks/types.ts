@@ -1,12 +1,13 @@
 export type RideRequestStatus = "pending" | "approved" | "rejected" | "cancelled"
 
-export type RideStatus = "upcoming" | "completed" | "cancelled"
+export type RideStatus = "upcoming" | "completed" | "rescheduled" | "canceled"
 
 
 export interface Ride {
   id: number
   uuid: string
   vehicle_plate: string
+  vehicle_model: string
   seats: number
   town_starting: string
   town_ending: string
@@ -14,7 +15,7 @@ export interface Ride {
   end_time: string
   created_at: string
   updated_at: string
-  status?: RideStatus
+  status: RideStatus
   // ownerName?: string
 }
 
@@ -24,6 +25,7 @@ export interface RidesResponse{
 
 export interface CreateRidePayload{
   vehiclePlate: string
+  vehicleModel: string
   seats: number
   townStarting: string
   townEnding: string
