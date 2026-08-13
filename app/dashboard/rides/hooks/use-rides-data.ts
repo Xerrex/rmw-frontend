@@ -2,7 +2,7 @@
 
 import { useQuery, useQueryClient, useMutation, keepPreviousData } from "@tanstack/react-query";
 import { apiCaller } from "@/lib/apiCaller";
-import type {RidesResponse, CreateRidePayload, CreateRideResponse, Ride } from "./types"
+import type {RidesResponse, CreateRidePayload, CreateRideResponse, Ride, RideRequestDetail, BackendRideRequestStatus } from "./types"
 
 
 type RidesProps = {
@@ -89,23 +89,77 @@ export function useRideDetails(rideUuid: string, enabled?: boolean){
   });
 
   return {
-    ride: data || [],
+    ride: data,
     isLoading, refetch, isRefetching, isError
   }
 }
 
-// export function useSearchRides() {
-//   const searchRides = async (params: { pickup: string; dropoff: string }) => {
-//     console.log("Searching rides with params:", params)
-//     // Return rides that match the route roughly
-//     return Promise.resolve(MOCK_RIDES.filter(r => 
-//       r.townStarting.toLowerCase().includes(params.pickup.toLowerCase()) || 
-//       r.townEnding.toLowerCase().includes(params.dropoff.toLowerCase())
-//     ))
-//   }
 
-//   return {
-//     mutateAsync: searchRides,
-//     isPending: false, // Mock
-//   }
-// }
+export function useRideRequests(rideUuid: string, enabled?: boolean) {
+  const { data, isLoading, refetch, isRefetching, isError } = useQuery<RideRequestDetail[]>({
+    queryKey: ["ride", rideUuid, "requests"],
+    queryFn: async () => {
+      const response = await apiCaller.get<RideRequestDetail[]>(`/rides/${rideUuid}/requests`);
+      return response.data as RideRequestDetail[];
+    },
+    staleTime: 1000 * 60,
+    enabled: enabled ?? true,
+  });
+
+  return {
+    rideRequests: data || [],
+    isLoading, refetch, isRefetching, isError
+  }
+}
+
+
+export function useUpdateRideRequestStatus(rideUuid: string) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation<RideRequestDetail, Error, { requestUuid: string; status: BackendRideRequestStatus }>({
+    mutationFn: async ({ requestUuid, status }) => {
+      const response = await apiCaller.put<RideRequestDetail>(
+        `/rides/${rideUuid}/requests/${requestUuid}/status`,
+        null,
+        { params: { rideRequestStatus: status } }
+      );
+      return response.data as RideRequestDetail;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ride", rideUuid] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard", "rides"] });
+    },
+  });
+
+  return {
+    updateRequestStatus: mutation.mutateAsync,
+    isUpdatingStatus: mutation.isPending,
+  }
+}
+
+
+type CreateRideRequestPayload = {
+  seats: number;
+  stop: string;
+}
+
+export function useCreateRideRequest(rideUuid: string) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation<RideRequestDetail, Error, CreateRideRequestPayload>({
+    mutationFn: async (payload) => {
+      const response = await apiCaller.post<RideRequestDetail>(`/rides/${rideUuid}/requests`, payload);
+      return response.data as RideRequestDetail;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ride", rideUuid] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard", "rides"] });
+    },
+  });
+
+  return {
+    createRideRequest: mutation.mutateAsync,
+    isCreatingRequest: mutation.isPending,
+  }
+}
+

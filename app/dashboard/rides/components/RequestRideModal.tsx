@@ -16,7 +16,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { useCreateRequest } from "../../rides-requests/hooks/use-rides-requests"
+import { useCreateRideRequest } from "../hooks/use-rides-data"
+import { toast } from "sonner"
 import { Loader2, Users, MapPin } from "lucide-react"
 
 const schema = z.object({
@@ -37,7 +38,7 @@ interface RequestRideModalProps {
 
 export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideModalProps) {
   const [open, setOpen] = useState(false)
-  const { mutate: createRequest, isPending } = useCreateRequest()
+  const { createRideRequest, isCreatingRequest } = useCreateRideRequest(rideUuid)
 
   const {
     register,
@@ -54,9 +55,17 @@ export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideM
   })
 
   async function onSubmit(values: ValidatedFormValues) {
-    await createRequest({ ...values, rideUuid, route: rideRoute })
-    setOpen(false)
-    reset()
+    try {
+      await createRideRequest({
+        seats: values.seatsRequested,
+        stop: `Pickup: ${values.pickup} | Drop-off: ${values.dropOff}`,
+      })
+      toast.success("Request sent to the ride owner")
+      setOpen(false)
+      reset()
+    } catch {
+      toast.error("Failed to send request. Please try again.")
+    }
   }
 
   return (
@@ -106,11 +115,11 @@ export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideM
           </div>
 
           <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" disabled={isCreatingRequest} onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" disabled={isCreatingRequest}>
+              {isCreatingRequest && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Send Request
             </Button>
           </DialogFooter>

@@ -87,12 +87,6 @@ export default function RidesPage() {
     setPage(1)
   }
 
-  // Mock: Check if user has already requested a ride
-  const hasRequested = (rideId: string) => {
-    // return requests?.some(req => req.rideId === rideId)
-    return false
-  }
-
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -206,7 +200,6 @@ export default function RidesPage() {
             ) : (
               <RideList
                 data={filteredRides}
-                hasRequested={hasRequested}
                 onRideClick={(id) => router.push(`/dashboard/rides/${id}`)}
               />
             )}
@@ -256,7 +249,7 @@ export default function RidesPage() {
 }
 
 
-function RideList({ data, hasRequested, onRideClick }: { data: Ride[], hasRequested: (id: string) => boolean, onRideClick: (id: string) => void }) {
+function RideList({ data, onRideClick }: { data: Ride[], onRideClick: (id: string) => void }) {
   return (
     <div className="space-y-4">
       {data.length === 0 ? (
@@ -292,6 +285,11 @@ function RideList({ data, hasRequested, onRideClick }: { data: Ride[], hasReques
                         >
                           {ride.status}
                         </Badge>
+                        {ride.is_owner && (
+                          <Badge variant="outline" className="text-[10px] h-5 px-2">
+                            Your ride
+                          </Badge>
+                        )}
                       </div>
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1.5">
@@ -300,7 +298,7 @@ function RideList({ data, hasRequested, onRideClick }: { data: Ride[], hasReques
                         </span>
                         <span className="flex items-center gap-1.5">
                           <CarFront className="h-3.5 w-3.5" />
-                          {ride.vehicle_plate}
+                          {ride.vehicle_model} &middot; {ride.vehicle_plate}
                         </span>
                       </div>
                     </div>
@@ -312,20 +310,26 @@ function RideList({ data, hasRequested, onRideClick }: { data: Ride[], hasReques
                   <div className="flex items-center justify-between mt-2 pt-4 border-t">
                     <div className="flex items-center gap-1.5 text-sm font-medium">
                       <Users className="h-4 w-4 text-primary" />
-                      {ride.seats} seats available
+                      {ride.available_seats} of {ride.seats} seats available
                     </div>
-                    
-                    {!hasRequested(ride.uuid) && ride.status === "upcoming" ? (
+
+                    {ride.is_owner ? (
+                      ride.pending_requests_count ? (
+                        <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                          {ride.pending_requests_count} pending request{ride.pending_requests_count === 1 ? "" : "s"}
+                        </Badge>
+                      ) : null
+                    ) : ride.has_requested ? (
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        Requested
+                      </Badge>
+                    ) : ride.status === "upcoming" ? (
                       <RequestRideModal rideUuid={ride.uuid} rideRoute={`${ride.town_starting} to ${ride.town_ending}`}>
                         <Button size="sm" variant="outline" className="gap-2">
                           <UserPlus className="h-4 w-4" />
                           Join Ride
                         </Button>
                       </RequestRideModal>
-                    ) : hasRequested(ride.uuid) ? (
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                        Requested
-                      </Badge>
                     ) : null}
                   </div>
                 </div>

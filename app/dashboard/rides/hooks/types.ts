@@ -16,7 +16,11 @@ export interface Ride {
   created_at: string
   updated_at: string
   status: RideStatus
-  // ownerName?: string
+  owner_name?: string | null
+  available_seats: number
+  is_owner: boolean
+  pending_requests_count?: number | null
+  has_requested?: boolean | null
 }
 
 export interface RidesResponse{
@@ -49,6 +53,22 @@ export interface RideRequest {
   dropOff: string
   route: string
   status: RideRequestStatus
+}
+
+// Real backend-driven ride request shape, used on the ride details page.
+export type BackendRideRequestStatus = "Pending" | "Accepted" | "Rejected"
+
+export interface RideRequestDetail {
+  id: number
+  uuid: string
+  seats: number
+  stop: string
+  status: BackendRideRequestStatus
+  created_at: string
+  updated_at: string
+  ride_id: number
+  ride_requester_id: number
+  requester_name?: string | null
 }
 
 

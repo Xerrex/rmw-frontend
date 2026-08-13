@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 import { ChevronDown, Monitor, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
@@ -13,9 +13,13 @@ const options = [
   { key: "system", label: "System", icon: Monitor },
 ] as const
 
+const emptySubscribe = () => () => {}
+
 export function ThemeModeToggle() {
   const { theme, setTheme } = useTheme()
   const [open, setOpen] = useState(false)
+  // Matches the server render (false) until the client takes over, avoiding a hydration mismatch.
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
   const wrapperRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -29,7 +33,9 @@ export function ThemeModeToggle() {
     return () => window.removeEventListener("pointerdown", onPointerDown)
   }, [])
 
-  const activeOption = options.find((option) => option.key === (theme ?? "system")) ?? options[2]
+  const activeOption = mounted
+    ? options.find((option) => option.key === (theme ?? "system")) ?? options[2]
+    : options[2]
 
   const ActiveIcon = activeOption.icon
 
