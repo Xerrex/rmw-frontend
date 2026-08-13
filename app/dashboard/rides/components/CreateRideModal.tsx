@@ -4,15 +4,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod/v4"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent,  DialogDescription, DialogHeader,
+  DialogTitle, DialogTrigger, DialogFooter,} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -28,7 +21,8 @@ const schema = z.object({
   endTime: z.string().min(1, "Estimated arrival time is required"),
 })
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.input<typeof schema>
+type ValidatedFormValues = z.output<typeof schema>
 
 interface CreateRideModalProps {
   children?: React.ReactNode
@@ -36,18 +30,14 @@ interface CreateRideModalProps {
 
 export function CreateRideModal({ children }: CreateRideModalProps) {
   const [open, setOpen] = useState(false)
-  const { mutate: createRide, isPending } = useCreateRide()
+  const { createRide, isCreating } = useCreateRide()
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormValues>({
+  const { register, handleSubmit, reset, formState: { errors },
+  } = useForm<FormValues, unknown, ValidatedFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       vehiclePlate: "",
-      seats: 4,
+      seats: 3,
       townStarting: "",
       townEnding: "",
       departTime: "",
@@ -55,7 +45,7 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
     },
   })
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: ValidatedFormValues) {
     await createRide(values)
     setOpen(false)
     reset()
@@ -71,7 +61,7 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-125">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <CarFront className="h-5 w-5 text-primary" /> New Trip
@@ -148,8 +138,8 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" disabled={isCreating}>
+              {isCreating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Trip
             </Button>
           </DialogFooter>

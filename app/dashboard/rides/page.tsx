@@ -167,7 +167,7 @@ function RideList({ data, hasRequested, onRideClick }: { data: Ride[], hasReques
                         </span>
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" className="shrink-0" onClick={() => onRideClick(ride.id)}>
+                    <Button variant="ghost" size="icon" className="shrink-0" onClick={() => onRideClick(ride.uuid)}>
                       <ChevronRight className="h-5 w-5" />
                     </Button>
                   </div>
@@ -178,14 +178,14 @@ function RideList({ data, hasRequested, onRideClick }: { data: Ride[], hasReques
                       {ride.seats} seats available
                     </div>
                     
-                    {!hasRequested(ride.id) && ride.status === "upcoming" ? (
-                      <RequestRideModal rideId={ride.id} rideRoute={`${ride.town_starting} to ${ride.town_ending}`}>
+                    {!hasRequested(ride.uuid) && ride.status === "upcoming" ? (
+                      <RequestRideModal rideUuid={ride.uuid} rideRoute={`${ride.town_starting} to ${ride.town_ending}`}>
                         <Button size="sm" variant="outline" className="gap-2">
                           <UserPlus className="h-4 w-4" />
                           Join Ride
                         </Button>
                       </RequestRideModal>
-                    ) : hasRequested(ride.id) ? (
+                    ) : hasRequested(ride.uuid) ? (
                       <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                         Requested
                       </Badge>

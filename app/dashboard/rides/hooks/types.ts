@@ -14,7 +14,7 @@ export interface Ride {
   end_time: string
   created_at: string
   updated_at: string
-  // status?: RideStatus
+  status?: RideStatus
   // ownerName?: string
 }
 
@@ -23,12 +23,12 @@ export interface RidesResponse{
 }
 
 export interface CreateRidePayload{
-  vehicle_plate: string
+  vehiclePlate: string
   seats: number
-  town_starting: string
-  town_ending: string
-  depart_time: string
-  end_time: string
+  townStarting: string
+  townEnding: string
+  departTime: string
+  endTime: string
 }
 
 export type CreateRideResponse = Ride;

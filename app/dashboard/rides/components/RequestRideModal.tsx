@@ -25,15 +25,17 @@ const schema = z.object({
   dropOff: z.string().min(1, "Drop-off point is required"),
 })
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.input<typeof schema>
+type ValidatedFormValues = z.output<typeof schema>
+
 
 interface RequestRideModalProps {
-  rideId: string
+  rideUuid: string
   rideRoute: string
   children: React.ReactNode
 }
 
-export function RequestRideModal({ rideId, rideRoute, children }: RequestRideModalProps) {
+export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideModalProps) {
   const [open, setOpen] = useState(false)
   const { mutate: createRequest, isPending } = useCreateRequest()
 
@@ -42,7 +44,7 @@ export function RequestRideModal({ rideId, rideRoute, children }: RequestRideMod
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>({
+  } = useForm<FormValues, unknown, ValidatedFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       seatsRequested: 1,
@@ -51,8 +53,8 @@ export function RequestRideModal({ rideId, rideRoute, children }: RequestRideMod
     },
   })
 
-  async function onSubmit(values: FormValues) {
-    await createRequest({ ...values, rideId, route: rideRoute })
+  async function onSubmit(values: ValidatedFormValues) {
+    await createRequest({ ...values, rideUuid, route: rideRoute })
     setOpen(false)
     reset()
   }
@@ -62,7 +64,7 @@ export function RequestRideModal({ rideId, rideRoute, children }: RequestRideMod
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             Join Ride
