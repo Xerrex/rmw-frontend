@@ -1,6 +1,6 @@
 "use client"
 
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation, keepPreviousData } from "@tanstack/react-query";
 import { apiCaller } from "@/lib/apiCaller";
 import type {RidesResponse, CreateRidePayload, CreateRideResponse, Ride } from "./types"
 
@@ -9,29 +9,33 @@ type RidesProps = {
   page: number;
   limit: number;
   search?: string;
+  minSeats?: number;
+  dateFrom?: string;
+  dateTo?: string;
   enabled?: boolean;
 }
 
 export function useRides(props: RidesProps) {
-  const queryClient = useQueryClient();
-  const { page, limit, search, enabled } = props;
+  const { page, limit, search, minSeats, dateFrom, dateTo, enabled } = props;
   const {data, isLoading, refetch, isRefetching, isError} = useQuery({
-    queryKey: ["dashboard", "rides", page, limit],
+    queryKey: ["dashboard", "rides", page, limit, search, minSeats, dateFrom, dateTo],
     queryFn: async ()=>{
       const params: Record<string, string|number> = { page, limit };
       if (search) params.search = search;
+      if (minSeats) params.min_seats = minSeats;
+      if (dateFrom) params.date_from = dateFrom;
+      if (dateTo) params.date_to = dateTo;
       const response = await apiCaller.get<RidesResponse>("/rides", {params });
       return response.data as RidesResponse
     },
-    placeholderData: () => queryClient.getQueryData<RidesResponse>([
-      "dashboard", "rides"
-    ]),
+    placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000, // 5 minutes
     // refetchOnWindowFocus: true,
     enabled: enabled ?? true,
   })
   return {
-    rides: data?.rides || [], 
+    rides: data?.rides || [],
+    total: data?.total ?? 0,
     isLoading, refetch, isRefetching, isError
   }
 }

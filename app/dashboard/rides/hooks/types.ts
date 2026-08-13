@@ -21,6 +21,9 @@ export interface Ride {
 
 export interface RidesResponse{
   rides: Ride[]
+  total: number
+  page: number
+  limit: number
 }
 
 export interface CreateRidePayload{
