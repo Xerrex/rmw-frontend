@@ -1,42 +1,8 @@
-"use client"
-
-import { useQuery } from "@tanstack/react-query"
 import { RideRequest } from "./types"
-
-/**
- * Hook to fetch all ride requests
- */
-export type FetchRideRequestsResponse = RideRequest[]
-
-export function useRidesRequests() {
-  const fetchRideRequests = async (): Promise<FetchRideRequestsResponse> => {
-    console.log("Fetching all ride requests from backend...")
-    // Mocking the backend call
-    return Promise.resolve(MOCK_RIDE_REQUESTS)
-  }
-
-  return useQuery({
-    queryKey: ["dashboard", "rides-requests"],
-    queryFn: fetchRideRequests,
-  })
-}
-
-export function useCreateRequest() {
-  const createRequest = async (data: any) => {
-    console.log("Creating new ride request with payload:", data)
-    return Promise.resolve({ success: true, id: "req-" + Math.random().toString(36).substr(2, 9) })
-  }
-
-  return {
-    mutate: createRequest,
-    isPending: false, // Mock
-  }
-}
-
 /**
  * Mock Data
  */
-const MOCK_RIDE_REQUESTS: RideRequest[] = [
+export const MOCK_RIDE_REQUESTS: RideRequest[] = [
   {
     id: "req-101",
     rideId: "ride-1",

@@ -1,14 +1,29 @@
 export type RideRequestStatus = "pending" | "confirmed" | "cancelled" | "rejected"
 
 export interface RideRequest {
-  id: string
-  rideId: string
-  passengerName: string
-  seatsRequested: number
-  pickup: string
-  dropOff: string
-  route: string
+  // id: string
+  uuid: string
+  seats: string
+  stop: string
   status: RideRequestStatus
-  createdAt: string
-  updatedAt: string
+  created_at: string
+  updated_at: string
+  requester_name: string
 }
+
+
+export interface RideRequestsResponse {
+  ride_requests: RideRequest[]
+  total: number
+  page: number
+  limit: number
+}
+
+
+export interface JoinRidePayload{
+  rideUuid: string
+  seats: number
+  stop: string
+}
+
+export type JoinRideResponse = RideRequest

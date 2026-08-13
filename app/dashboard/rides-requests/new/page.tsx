@@ -9,7 +9,7 @@ import { Step2MatchingRides } from "./components/Step2MatchingRides"
 import { Step3RequestDetails } from "./components/Step3RequestDetails"
 import { SummaryPanel } from "./components/SummaryPanel"
 import { useSearchRides } from "../../rides/hooks/use-rides-data"
-import { useCreateRequest } from "../hooks/use-rides-requests"
+import { useCreateRequest } from "../hooks/use-rides-requests-data"
 
 export default function NewRideRequestPage() {
   // const router = useRouter()
