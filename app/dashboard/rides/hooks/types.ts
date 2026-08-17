@@ -62,6 +62,7 @@ export interface RideRequestDetail {
   id: number
   uuid: string
   seats: number
+  pickup: string
   stop: string
   status: BackendRideRequestStatus
   created_at: string

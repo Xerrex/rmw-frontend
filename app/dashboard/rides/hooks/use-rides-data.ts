@@ -140,6 +140,7 @@ export function useUpdateRideRequestStatus(rideUuid: string) {
 
 type CreateRideRequestPayload = {
   seats: number;
+  pickup: string;
   stop: string;
 }
 

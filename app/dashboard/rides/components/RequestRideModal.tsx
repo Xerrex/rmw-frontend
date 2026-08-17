@@ -58,7 +58,8 @@ export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideM
     try {
       await createRideRequest({
         seats: values.seatsRequested,
-        stop: `Pickup: ${values.pickup} | Drop-off: ${values.dropOff}`,
+        pickup: values.pickup,
+        stop: values.dropOff
       })
       toast.success("Request sent to the ride owner")
       setOpen(false)
@@ -73,7 +74,7 @@ export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideM
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-106.25">
+      <DialogContent className="sm:max-w-106.25" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             Join Ride

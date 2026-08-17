@@ -7,10 +7,8 @@ import { RequestRideModal } from "../components/RequestRideModal"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  ArrowLeft, CarFront, Users, Clock, MapPin, ArrowRight,
-  Calendar, ShieldCheck, UserPlus, Check, X,
-} from "lucide-react"
+import { ArrowLeft, CarFront, Users, Clock, MapPin, ArrowRight,
+  Calendar, ShieldCheck, UserPlus, Check, X, } from "lucide-react"
 import { format, parse } from "date-fns"
 import { cn } from "@/lib/utils"
 import type { RideRequestDetail } from "../hooks/types"
@@ -246,6 +244,10 @@ function RequestCard({
           </Badge>
         </div>
         <div className="mt-4 flex items-center justify-between gap-4">
+          <div className="text-sm bg-muted/30 p-3 rounded-lg flex-1">
+            <p className="text-[10px] text-muted-foreground font-bold uppercase">Pick up</p>
+            <p className="font-medium">{request.pickup}</p>
+          </div>
           <div className="text-sm bg-muted/30 p-3 rounded-lg flex-1">
             <p className="text-[10px] text-muted-foreground font-bold uppercase">Stop</p>
             <p className="font-medium">{request.stop}</p>
