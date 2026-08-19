@@ -41,7 +41,7 @@ export function useRideRequests(props: RideRequestsProps) {
     enabled: enabled ?? true,
   })
   return{
-    rideRequests: data?.ride_requests || [],
+    rideRequests: data?.r_requests || [],
     total: data?.total ?? 0,
     page: data?.page,
     limit: data?.limit,

@@ -12,8 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 import { Calendar } from "@/components/ui/calendar"
-import { Search, Users, Clock, MapPin, CheckCircle2, XCircle, Ban, ChevronRight, 
-  Plus, ChevronLeft, SlidersHorizontal, X, CalendarIcon } from "lucide-react"
+import { Search, Users, Clock, CheckCircle2, XCircle, Ban, ChevronRight, 
+  Plus, ChevronLeft, SlidersHorizontal, X, CalendarIcon, 
+  MapPin} from "lucide-react"
 import { format, parse } from "date-fns"
 import { cn } from "@/lib/utils"
 import type { DateRange } from "react-day-picker"
@@ -261,13 +262,17 @@ export default function RideRequestsPage() {
                       </div>
                       
                       {/** TODO: Fix this route thing */}
-                      {/* <div className="flex flex-col gap-1">
-                        <span className="font-medium text-primary text-sm">{req.route}</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="font-medium text-primary text-sm">
+                          {req.ride.town_starting} - {req.ride.town_ending}
+                        </span>
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Pickup: {req.pickup}</span>
-                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Drop-off: {req.dropOff}</span>
+                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> 
+                            Pickup: {req.pickup}</span>
+                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> 
+                          Drop-off: {req.stop}</span>
                         </div>
-                      </div> */}
+                      </div>
 
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1.5 font-medium text-foreground">
@@ -276,7 +281,7 @@ export default function RideRequestsPage() {
                         </span>
                         <span className="flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5" />
-                          {format(parse(req.created_at, 'dd-MM-yyyy HH:mm', new Date()), "dd-MM-yyyy HH:mm")}
+                          {format(parse(req.created_at, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", new Date()), "dd-MM-yyyy HH:mm")}
                         </span>
                       </div>
                     </div>
