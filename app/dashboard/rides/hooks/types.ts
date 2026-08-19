@@ -57,6 +57,7 @@ export interface RideRequest {
 
 // Real backend-driven ride request shape, used on the ride details page.
 export type BackendRideRequestStatus = "Pending" | "Accepted" | "Rejected"
+export type ViewerRole = "requester" | "owner"
 
 export interface RideRequestDetail {
   id: number
@@ -70,6 +71,19 @@ export interface RideRequestDetail {
   ride_id: number
   ride_requester_id: number
   requester_name?: string | null
+  viewer_role?: ViewerRole | null
+  can_edit: boolean
+  passenger_names?: string[] | null
+}
+
+export interface AuditLogEntry {
+  id: number
+  entity_type: "ride" | "ride_request"
+  entity_uuid: string
+  action: string
+  changes?: Record<string, { from: unknown; to: unknown }> | null
+  actor_name?: string | null
+  created_at: string
 }
 
 

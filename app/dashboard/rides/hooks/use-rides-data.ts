@@ -2,7 +2,7 @@
 
 import { useQuery, useQueryClient, useMutation, keepPreviousData } from "@tanstack/react-query";
 import { apiCaller } from "@/lib/apiCaller";
-import type {RidesResponse, CreateRidePayload, CreateRideResponse, Ride, RideRequestDetail, BackendRideRequestStatus } from "./types"
+import type {RidesResponse, CreateRidePayload, CreateRideResponse, Ride, RideRequestDetail, BackendRideRequestStatus, AuditLogEntry } from "./types"
 
 
 type RidesProps = {
@@ -142,6 +142,7 @@ type CreateRideRequestPayload = {
   seats: number;
   pickup: string;
   stop: string;
+  passenger_names?: string[];
 }
 
 export function useCreateRideRequest(rideUuid: string) {
@@ -155,6 +156,7 @@ export function useCreateRideRequest(rideUuid: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ride", rideUuid] });
       queryClient.invalidateQueries({ queryKey: ["dashboard", "rides"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard", "rides-requests"] });
     },
   });
 
@@ -163,4 +165,18 @@ export function useCreateRideRequest(rideUuid: string) {
     isCreatingRequest: mutation.isPending,
   }
 }
+
+export function useRideAuditLogs(rideUuid: string, enabled?: boolean) {
+  const { data, isLoading } = useQuery<AuditLogEntry[]>({
+    queryKey: ["ride", rideUuid, "audit-logs"],
+    queryFn: async () => {
+      const response = await apiCaller.get<AuditLogEntry[]>(`/rides/${rideUuid}/audit-logs`);
+      return response.data as AuditLogEntry[];
+    },
+    enabled: enabled ?? true,
+  });
+
+  return { auditLogs: data || [], isLoading };
+}
+
 

@@ -12,14 +12,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 import { Calendar } from "@/components/ui/calendar"
-import { Search, Users, Clock, CheckCircle2, XCircle, Ban, ChevronRight, 
+import { Search, Users, Clock, CheckCircle2, XCircle, ChevronRight, 
   Plus, ChevronLeft, SlidersHorizontal, X, CalendarIcon, 
   MapPin} from "lucide-react"
 import { format, parse } from "date-fns"
 import { cn } from "@/lib/utils"
 import type { DateRange } from "react-day-picker"
 import { useRideRequests } from "./hooks/use-rides-requests-data"
-import { RideRequest } from "./hooks/types"
+import { RideRequest, RideRequestStatus } from "./hooks/types"
+import { RideRequestDetailsSheet, RideRequestSheetData } from "@/app/dashboard/rides-requests/components/RideRequestDetailsSheet"
 
 
 const SEAT_OPTIONS = ["1", "2", "3", "4", "5"]
@@ -30,8 +31,35 @@ function matchesRideRequestSearch(rr: RideRequest, query:string){
 
   return (
     rr.requester_name.toLowerCase().includes(q) ||
-    rr.stop.toLowerCase().includes(q)
+    rr.stop.toLowerCase().includes(q) ||
+    rr.pickup.toLowerCase().includes(q) ||
+    rr.ride.town_starting.toLowerCase().includes(q) ||
+    rr.ride.town_ending.toLowerCase().includes(q)
   )
+}
+
+function toSheetData(req: RideRequest): RideRequestSheetData {
+  return {
+    rideUuid: req.ride.uuid,
+    requestUuid: req.uuid,
+    seats: req.seats,
+    pickup: req.pickup,
+    stop: req.stop,
+    status: req.status,
+    createdAt: req.created_at,
+    requesterName: req.requester_name,
+    viewerRole: req.viewer_role,
+    canEdit: req.can_edit,
+    passengerNames: req.passenger_names,
+    ride: {
+      townStarting: req.ride.town_starting,
+      townEnding: req.ride.town_ending,
+      vehiclePlate: req.ride.vehicle_plate,
+      vehicleModel: req.ride.vehicle_plate,
+      departTime: req.ride.depart_time,
+      status: req.ride.status,
+    },
+  }
 }
 
 export default function RideRequestsPage() {
@@ -40,9 +68,11 @@ export default function RideRequestsPage() {
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [searchInput, setSearchInput] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
+  const [statusFilter, setStatusFilter] = useState<"all" | RideRequestStatus>("all")
   const [minSeats, setMinSeats] = useState<string>("any")
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
+  const [selectedUuid, setSelectedUuid] = useState<string | null>(null)
+  const [sheetOpen, setSheetOpen] = useState(false)
 
 
   useEffect(() => {
@@ -89,11 +119,17 @@ export default function RideRequestsPage() {
 
   const totalPages = Math.max(1, Math.ceil(total / itemsPerPage))
   const activeFilterCount = (minSeats !== "any" ? 1 : 0) + (dateRange?.from ? 1 : 0)
+  const selectedRequest = rideRequests.find((r) => r.uuid === selectedUuid) || null
 
   function clearFilters() {
     setMinSeats("any")
     setDateRange(undefined)
     setPage(1)
+  }
+
+  function openRequestDetails(req: RideRequest) {
+    setSelectedUuid(req.uuid)
+    setSheetOpen(true)
   }
 
   if (isLoading) {
@@ -202,25 +238,21 @@ export default function RideRequestsPage() {
       </div>
 
       <div className="space-y-4">
-        <Tabs value={statusFilter} onValueChange={setStatusFilter} className="w-full">
+        <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as "all" | RideRequestStatus)} className="w-full">
         <ScrollArea className="w-full whitespace-nowrap">
           <TabsList className="inline-flex h-12 items-center justify-start rounded-none border-b bg-transparent p-0 w-full mb-6">
             <TabsTrigger value="all" className="relative h-12 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
               All Requests
             </TabsTrigger>
-            <TabsTrigger value="pending" className="relative h-12 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
+            <TabsTrigger value="Pending" className="relative h-12 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
               <Clock className="mr-2 h-4 w-4" />
               Pending
             </TabsTrigger>
-            <TabsTrigger value="confirmed" className="relative h-12 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
+            <TabsTrigger value="Accepted" className="relative h-12 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
               <CheckCircle2 className="mr-2 h-4 w-4" />
-              Confirmed
+              Accepted
             </TabsTrigger>
-            <TabsTrigger value="cancelled" className="relative h-12 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
-              <Ban className="mr-2 h-4 w-4" />
-              Cancelled
-            </TabsTrigger>
-            <TabsTrigger value="rejected" className="relative h-12 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
+            <TabsTrigger value="Rejected" className="relative h-12 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
               <XCircle className="mr-2 h-4 w-4" />
               Rejected
             </TabsTrigger>
@@ -237,13 +269,16 @@ export default function RideRequestsPage() {
             filteredRequests.map((req) => (
               <Card 
                 key={req.uuid} 
-                className="cursor-pointer hover:shadow-md transition-all border-none shadow-sm group relative overflow-hidden bg-white dark:bg-card"
-                onClick={() => router.push(`/dashboard/rides-requests/${req.uuid}`)}
+                className={cn(
+                  "cursor-pointer hover:shadow-md transition-all border-none shadow-sm group relative overflow-hidden bg-white dark:bg-card",
+                  selectedUuid === req.uuid && "ring-2 ring-primary shadow-md"
+                )}
+                onClick={() => openRequestDetails(req)}
               >
                 <div className={cn(
                   "absolute left-0 top-0 bottom-0 w-1",
-                  req.status === "confirmed" ? "bg-green-500" : 
-                  req.status === "pending" ? "bg-orange-500" : "bg-red-500"
+                  req.status === "Accepted" ? "bg-green-500" : 
+                  req.status === "Pending" ? "bg-orange-500" : "bg-red-500"
                 )} />
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -251,17 +286,19 @@ export default function RideRequestsPage() {
                       <div className="flex items-center gap-2">
                         <h4 className="font-bold text-lg">{req.requester_name}</h4>
                         <Badge 
-                          variant={req.status === "confirmed" ? "default" : req.status === "pending" ? "secondary" : "destructive"}
+                          variant={req.status === "Accepted" ? "default" : req.status === "Pending" ? "secondary" : "destructive"}
                           className={cn(
                             "capitalize text-[10px] h-5 px-2",
-                            req.status === "pending" && "bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400"
+                            req.status === "Pending" && "bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400"
                           )}
                         >
                           {req.status}
                         </Badge>
+                        {req.viewer_role === "owner" && (
+                          <Badge variant="outline" className="text-[10px] h-5 px-2">On your ride</Badge>
+                        )}
                       </div>
                       
-                      {/** TODO: Fix this route thing */}
                       <div className="flex flex-col gap-1">
                         <span className="font-medium text-primary text-sm">
                           {req.ride.town_starting} - {req.ride.town_ending}
@@ -292,6 +329,7 @@ export default function RideRequestsPage() {
                   </div>
                 </CardContent>
               </Card>
+
             ))
           )}
         </div>
@@ -335,6 +373,12 @@ export default function RideRequestsPage() {
           </div>
         </div>
       </div>
+
+      <RideRequestDetailsSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        data={selectedRequest ? toSheetData(selectedRequest) : null}
+      />
     </div>
   )
 }

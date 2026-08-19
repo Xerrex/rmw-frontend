@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useEffect, useState } from "react"
+import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import {
@@ -24,6 +24,7 @@ const schema = z.object({
   seatsRequested: z.coerce.number().min(1, "At least 1 seat required"),
   pickup: z.string().min(1, "Pickup point is required"),
   dropOff: z.string().min(1, "Drop-off point is required"),
+  passengerNames: z.array(z.object({ value: z.string().min(1, "Name is required") })),
 })
 
 type FormValues = z.input<typeof schema>
@@ -44,6 +45,9 @@ export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideM
     register,
     handleSubmit,
     reset,
+    control,
+    watch,
+    getValues,
     formState: { errors },
   } = useForm<FormValues, unknown, ValidatedFormValues>({
     resolver: zodResolver(schema),
@@ -51,15 +55,28 @@ export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideM
       seatsRequested: 1,
       pickup: "",
       dropOff: "",
+      passengerNames: [],
     },
   })
+
+  const { fields, replace } = useFieldArray({ control, name: "passengerNames" })
+  const seats = watch("seatsRequested")
+
+  useEffect(() => {
+    const required = Math.max(Number(seats || 1) - 1, 0)
+    const current = getValues("passengerNames") || []
+    if (current.length !== required) {
+      replace(Array.from({ length: required }, (_, i) => current[i] ?? { value: "" }))
+    }
+  }, [seats])
 
   async function onSubmit(values: ValidatedFormValues) {
     try {
       await createRideRequest({
         seats: values.seatsRequested,
         pickup: values.pickup,
-        stop: values.dropOff
+        stop: values.dropOff,
+        passenger_names: values.passengerNames.map((p) => p.value),
       })
       toast.success("Request sent to the ride owner")
       setOpen(false)
@@ -115,6 +132,20 @@ export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideM
             )}
           </div>
 
+          {fields.length > 0 && (
+            <div className="space-y-2">
+              <Label>Additional passenger names</Label>
+              {fields.map((field, index) => (
+                <div key={field.id} className="space-y-1">
+                  <Input placeholder={`Passenger ${index + 1} name`} {...register(`passengerNames.${index}.value` as const)} />
+                  {errors.passengerNames?.[index]?.value && (
+                    <p className="text-xs text-destructive">{errors.passengerNames[index]?.value?.message}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
           <DialogFooter className="pt-4">
             <Button type="button" variant="outline" disabled={isCreatingRequest} onClick={() => setOpen(false)}>
               Cancel
@@ -129,3 +160,4 @@ export function RequestRideModal({ rideUuid, rideRoute, children }: RequestRideM
     </Dialog>
   )
 }
+

@@ -1,17 +1,42 @@
 "use client"
 
+import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { useRideDetails, useRideRequests, useUpdateRideRequestStatus } from "../hooks/use-rides-data"
+import { useRideDetails, useRideRequests } from "../hooks/use-rides-data"
 import { RequestRideModal } from "../components/RequestRideModal"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, CarFront, Users, Clock, MapPin, ArrowRight,
-  Calendar, ShieldCheck, UserPlus, Check, X, } from "lucide-react"
+  Calendar, ShieldCheck, UserPlus, ChevronRight, } from "lucide-react"
 import { format, parse } from "date-fns"
 import { cn } from "@/lib/utils"
 import type { RideRequestDetail } from "../hooks/types"
+import { RideRequestDetailsSheet, RideRequestSheetData } from "@/app/dashboard/rides-requests/components/RideRequestDetailsSheet"
+
+function toSheetData(req: RideRequestDetail, ride: { town_starting: string; town_ending: string; vehicle_plate: string; vehicle_model: string; depart_time: string; status: string }, rideUuid: string): RideRequestSheetData {
+  return {
+    rideUuid,
+    requestUuid: req.uuid,
+    seats: req.seats,
+    pickup: req.pickup,
+    stop: req.stop,
+    status: req.status,
+    createdAt: req.created_at,
+    requesterName: req.requester_name,
+    viewerRole: req.viewer_role,
+    canEdit: req.can_edit,
+    passengerNames: req.passenger_names,
+    ride: {
+      townStarting: ride.town_starting,
+      townEnding: ride.town_ending,
+      vehiclePlate: ride.vehicle_plate,
+      vehicleModel: ride.vehicle_model,
+      departTime: ride.depart_time,
+      status: ride.status,
+    },
+  }
+}
 
 export default function RideDetailsPage() {
   const params = useParams<{ id: string }>()
@@ -20,7 +45,8 @@ export default function RideDetailsPage() {
 
   const { ride, isLoading: rideLoading } = useRideDetails(rideUuid)
   const { rideRequests, isLoading: requestsLoading } = useRideRequests(rideUuid, !!ride)
-  const { updateRequestStatus, isUpdatingStatus } = useUpdateRideRequestStatus(rideUuid)
+  const [selectedUuid, setSelectedUuid] = useState<string | null>(null)
+  const [sheetOpen, setSheetOpen] = useState(false)
 
   if (rideLoading) {
     return (
@@ -40,13 +66,11 @@ export default function RideDetailsPage() {
     )
   }
 
-  async function handleStatusChange(requestUuid: string, status: "Accepted" | "Rejected") {
-    try {
-      await updateRequestStatus({ requestUuid, status })
-      toast.success(`Request ${status.toLowerCase()}`)
-    } catch {
-      toast.error("Failed to update the request. Please try again.")
-    }
+  const selectedRequest = rideRequests.find((r) => r.uuid === selectedUuid) || null
+
+  function openRequestDetails(req: RideRequestDetail) {
+    setSelectedUuid(req.uuid)
+    setSheetOpen(true)
   }
 
   return (
@@ -177,9 +201,8 @@ export default function RideDetailsPage() {
                     <RequestCard
                       key={req.uuid}
                       request={req}
-                      isUpdating={isUpdatingStatus}
-                      onAccept={() => handleStatusChange(req.uuid, "Accepted")}
-                      onReject={() => handleStatusChange(req.uuid, "Rejected")}
+                      isSelected={selectedUuid === req.uuid}
+                      onClick={() => openRequestDetails(req)}
                     />
                   ))}
                 </div>
@@ -196,7 +219,14 @@ export default function RideDetailsPage() {
                   <div className="w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : (
-                rideRequests.map((req) => <RequestCard key={req.uuid} request={req} readOnly />)
+                rideRequests.map((req) => (
+                  <RequestCard
+                    key={req.uuid}
+                    request={req}
+                    isSelected={selectedUuid === req.uuid}
+                    onClick={() => openRequestDetails(req)}
+                  />
+                ))
               )}
             </div>
           )}
@@ -213,21 +243,31 @@ export default function RideDetailsPage() {
           </Card>
         </div>
       </div>
+
+      <RideRequestDetailsSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        data={selectedRequest ? toSheetData(selectedRequest, ride, ride.uuid) : null}
+      />
     </div>
   )
 }
 
 function RequestCard({
-  request, onAccept, onReject, isUpdating, readOnly,
+  request, onClick, isSelected,
 }: {
   request: RideRequestDetail
-  onAccept?: () => void
-  onReject?: () => void
-  isUpdating?: boolean
-  readOnly?: boolean
+  onClick?: () => void
+  isSelected?: boolean
 }) {
   return (
-    <Card className="border-none shadow-sm hover:shadow-md transition-shadow">
+    <Card
+      className={cn(
+        "border-none shadow-sm hover:shadow-md transition-shadow cursor-pointer",
+        isSelected && "ring-2 ring-primary shadow-md"
+      )}
+      onClick={onClick}
+    >
       <CardContent className="p-4 sm:p-6">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -252,19 +292,9 @@ function RequestCard({
             <p className="text-[10px] text-muted-foreground font-bold uppercase">Stop</p>
             <p className="font-medium">{request.stop}</p>
           </div>
-          {!readOnly && request.status === "Pending" && (
-            <div className="flex items-center gap-2 shrink-0">
-              <Button size="icon-sm" variant="outline" disabled={isUpdating} onClick={onReject}>
-                <X className="h-4 w-4" />
-              </Button>
-              <Button size="icon-sm" disabled={isUpdating} onClick={onAccept}>
-                <Check className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
+          <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
         </div>
       </CardContent>
     </Card>
   )
 }
-

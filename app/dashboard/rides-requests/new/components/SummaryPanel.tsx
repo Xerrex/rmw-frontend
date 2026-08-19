@@ -4,11 +4,12 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { MapPin, Users, CarFront, CheckCircle2, Loader2 } from "lucide-react"
+import type { Ride } from "../../../rides/hooks/types"
 
-interface SummaryPanelProps {
+interface SummaryPanelProps { 
   pickup: string
-  dropoff: string
-  selectedRide: any | null
+  stop: string
+  selectedRide: Ride | null
   seats: number
   isPending: boolean
   canSubmit: boolean
@@ -17,7 +18,7 @@ interface SummaryPanelProps {
 
 export function SummaryPanel({ 
   pickup, 
-  dropoff, 
+  stop, 
   selectedRide, 
   seats, 
   isPending, 
@@ -32,6 +33,23 @@ export function SummaryPanel({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Selected Ride */}
+        <div className="space-y-3">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-1.5">
+            <CarFront className="h-3 w-3" /> Selected Ride
+          </p>
+          {selectedRide ? (
+            <div className="text-sm font-medium">
+              <p>{selectedRide.town_starting} to {selectedRide.town_ending}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{selectedRide.vehicle_plate} &middot; {selectedRide.available_seats} seats left</p>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground italic">No ride selected</p>
+          )}
+        </div>
+
+        <Separator />
+
         {/* Route Info */}
         <div className="space-y-3">
           <div className="flex items-start gap-3">
@@ -48,27 +66,10 @@ export function SummaryPanel({
               <MapPin className="h-3 w-3 text-red-500" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase">Drop-off</p>
-              <p className="text-sm font-medium">{dropoff || "Not set"}</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase">Stop</p>
+              <p className="text-sm font-medium">{stop || "Not set"}</p>
             </div>
           </div>
-        </div>
-
-        <Separator />
-
-        {/* Selected Ride */}
-        <div className="space-y-3">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-1.5">
-            <CarFront className="h-3 w-3" /> Selected Ride
-          </p>
-          {selectedRide ? (
-            <div className="text-sm font-medium">
-              <p>{selectedRide.townStarting} to {selectedRide.townEnding}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{selectedRide.vehiclePlate} • {selectedRide.departTime && new Date(selectedRide.departTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground italic">No ride selected</p>
-          )}
         </div>
 
         <Separator />
