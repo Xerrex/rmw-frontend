@@ -49,9 +49,16 @@ export interface RideRequestSheetData {
 
 function parseServerDate(value: string) {
   try {
-    return parse(value, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", new Date())
+    // Try with milliseconds first
+    return parse(value, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", new Date());
   } catch {
-    return new Date(value)
+    try {
+      // Try without milliseconds
+      return parse(value, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+    } catch {
+      // Fallback to native parsing
+      return new Date(value);
+    }
   }
 }
 
@@ -71,6 +78,7 @@ interface RideRequestDetailsSheetProps {
 }
 
 export function RideRequestDetailsSheet({ open, onOpenChange, data }: RideRequestDetailsSheetProps) {
+  console.log("Ride request detail", data)
   const [isEditing, setIsEditing] = useState(false)
   const { updateRideRequestDetails, isUpdatingDetails } = useUpdateRideRequestDetails()
   const { updateRequestStatus, isUpdatingStatus } = useUpdateRideRequestStatusGeneric()
@@ -172,7 +180,7 @@ export function RideRequestDetailsSheet({ open, onOpenChange, data }: RideReques
         <div className="px-6 pb-6 space-y-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Clock className="h-4 w-4" />
-            {/* {format(parseServerDate(data.ride.departTime), "dd-MM-yyyy HH:mm")} &middot; {data.ride.vehiclePlate} */}
+            {data?.ride?.departTime ? (format(new Date(data.ride.departTime), "dd-MM-yyyy HH:mm")): ("-")} &middot; {data.ride.vehiclePlate}
           </div>
 
           {!isEditing ? (
@@ -192,7 +200,7 @@ export function RideRequestDetailsSheet({ open, onOpenChange, data }: RideReques
                 <p className="font-medium">{data.seats} seat{data.seats === 1 ? "" : "s"}</p>
               </div>
 
-              {isOwner && data.passengerNames && data.passengerNames.length > 0 && (
+              {(isRequester || (isOwner && data.status === "Accepted")) && data.passengerNames && data.passengerNames.length > 0 && (
                 <div className="text-sm bg-muted/30 p-3 rounded-lg space-y-1">
                   <p className="text-[10px] text-muted-foreground font-bold uppercase">Additional passengers</p>
                   {data.passengerNames.map((name, idx) => (
