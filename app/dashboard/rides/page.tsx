@@ -19,8 +19,7 @@ import {
 import { useRides } from "./hooks/use-rides-data"
 import { CreateRideModal } from "./components/CreateRideModal"
 import { RequestRideModal } from "./components/RequestRideModal"
-import { format, parse } from "date-fns"
-import { cn } from "@/lib/utils"
+import { cn, formatDateTime } from "@/lib/utils"
 import { Ride } from "./hooks/types"
 
 const SEAT_OPTIONS = ["1", "2", "3", "4", "5"]
@@ -294,7 +293,7 @@ function RideList({ data, onRideClick }: { data: Ride[], onRideClick: (id: strin
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5" />
-                          {format(parse(ride.depart_time, 'dd-MM-yyyy HH:mm', new Date()), "dd-MM-yyyy HH:mm")}
+                          {formatDateTime(ride.depart_time)}
                         </span>
                         <span className="flex items-center gap-1.5">
                           <CarFront className="h-3.5 w-3.5" />

@@ -9,8 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, CarFront, Users, Clock, MapPin, ArrowRight,
   Calendar, ShieldCheck, UserPlus, ChevronRight, } from "lucide-react"
-import { format, parse } from "date-fns"
-import { cn } from "@/lib/utils"
+import { cn, formatDateTime } from "@/lib/utils"
 import type { RideRequestDetail } from "../hooks/types"
 import { RideRequestDetailsSheet, RideRequestSheetData } from "@/app/dashboard/rides-requests/components/RideRequestDetailsSheet"
 
@@ -122,7 +121,7 @@ export default function RideDetailsPage() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Departure Date & Time</p>
-                      <p className="font-semibold"> {format(parse(ride.depart_time, 'dd-MM-yyyy HH:mm', new Date()), "dd-MM-yyyy HH:mm")}</p>
+                      <p className="font-semibold"> {formatDateTime(ride.depart_time)}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -131,7 +130,7 @@ export default function RideDetailsPage() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Estimated Arrival Date & Time</p>
-                      <p className="font-semibold"> {format(parse(ride.end_time, 'dd-MM-yyyy HH:mm', new Date()), "dd-MM-yyyy HH:mm")}</p>
+                      <p className="font-semibold"> {formatDateTime(ride.end_time)}</p>
                     </div>
                   </div>
                 </div>

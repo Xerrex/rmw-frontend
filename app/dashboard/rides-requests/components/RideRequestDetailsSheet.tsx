@@ -13,8 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { format, parse } from "date-fns"
-import { cn } from "@/lib/utils"
+import { cn, formatDateTime } from "@/lib/utils"
 import {
   MapPin, Users, Clock, Check, X, Pencil, Loader2, CarFront, ArrowRight, History,
 } from "lucide-react"
@@ -47,21 +46,6 @@ export interface RideRequestSheetData {
   }
 }
 
-function parseServerDate(value: string) {
-  try {
-    // Try with milliseconds first
-    return parse(value, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", new Date());
-  } catch {
-    try {
-      // Try without milliseconds
-      return parse(value, "yyyy-MM-dd'T'HH:mm:ss", new Date());
-    } catch {
-      // Fallback to native parsing
-      return new Date(value);
-    }
-  }
-}
-
 function buildEditSchema(seats: number) {
   return z.object({
     seats: z.coerce.number().min(1, "At least 1 seat required"),
@@ -78,7 +62,7 @@ interface RideRequestDetailsSheetProps {
 }
 
 export function RideRequestDetailsSheet({ open, onOpenChange, data }: RideRequestDetailsSheetProps) {
-  console.log("Ride request detail", data)
+  
   const [isEditing, setIsEditing] = useState(false)
   const { updateRideRequestDetails, isUpdatingDetails } = useUpdateRideRequestDetails()
   const { updateRequestStatus, isUpdatingStatus } = useUpdateRideRequestStatusGeneric()
@@ -180,7 +164,9 @@ export function RideRequestDetailsSheet({ open, onOpenChange, data }: RideReques
         <div className="px-6 pb-6 space-y-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Clock className="h-4 w-4" />
-            {data?.ride?.departTime ? (format(new Date(data.ride.departTime), "dd-MM-yyyy HH:mm")): ("-")} &middot; {data.ride.vehiclePlate}
+            {/* {data?.ride?.departTime ? formatDateTime(data.ride.departTime, "dd-MM-yyyy HH:mm", "yyyy-MM-dd'T'HH:mm:ss.SSSSSS") : "-"} &middot; {data.ride.vehiclePlate} */}
+            <Clock className="h-4 w-4" />
+            {data?.ride?.departTime ? formatDateTime(data.ride.departTime) : "-"} &middot; {data.ride.vehiclePlate}
           </div>
 
           {!isEditing ? (
@@ -282,7 +268,7 @@ export function RideRequestDetailsSheet({ open, onOpenChange, data }: RideReques
                 {auditLogs.map((log) => (
                   <div key={log.id} className="text-xs text-muted-foreground">
                     <span className="font-medium text-foreground capitalize">{log.action.replace("_", " ")}</span>
-                    {" "}by {log.actor_name || "system"} &middot; {format(new Date(log.created_at), "dd-MM-yyyy HH:mm")}
+                    {" "}by {log.actor_name || "system"} &middot; {formatDateTime(log.created_at, "dd-MM-yyyy HH:mm", "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")}
                   </div>
                 ))}
               </div>

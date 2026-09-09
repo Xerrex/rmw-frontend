@@ -15,8 +15,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Search, Users, Clock, CheckCircle2, XCircle, ChevronRight, 
   Plus, ChevronLeft, SlidersHorizontal, X, CalendarIcon, 
   MapPin} from "lucide-react"
-import { format, parse } from "date-fns"
-import { cn } from "@/lib/utils"
+import { cn, formatDateTime } from "@/lib/utils"
 import type { DateRange } from "react-day-picker"
 import { useRideRequests } from "./hooks/use-rides-requests-data"
 import { RideRequest, RideRequestStatus } from "./hooks/types"
@@ -318,7 +317,7 @@ export default function RideRequestsPage() {
                         </span>
                         <span className="flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5" />
-                          {format(parse(req.created_at, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", new Date()), "dd-MM-yyyy HH:mm")}
+                          {formatDateTime(req.created_at, "dd-MM-yyyy HH:mm", "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")}
                         </span>
                       </div>
                     </div>

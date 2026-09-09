@@ -3,8 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CarFront, Clock, Users, ArrowRight, Check } from "lucide-react"
-import { format, parse } from "date-fns"
-import { cn } from "@/lib/utils"
+import { cn, formatDateTime } from "@/lib/utils"
 import type { Ride } from "../../../rides/hooks/types"
 
 interface Step2MatchingRidesProps {
@@ -12,14 +11,6 @@ interface Step2MatchingRidesProps {
   selectedRideUuid: string | null
   onSelect: (ride: Ride) => void
   isLoading: boolean
-}
-
-function parseServerDate(value: string) {
-  try {
-    return parse(value, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", new Date())
-  } catch {
-    return new Date(value)
-  }
 }
 
 export function Step2MatchingRides({ rides, selectedRideUuid, onSelect, isLoading }: Step2MatchingRidesProps) {
@@ -66,7 +57,7 @@ export function Step2MatchingRides({ rides, selectedRideUuid, onSelect, isLoadin
                       {ride.town_starting} <ArrowRight className="h-3 w-3" /> {ride.town_ending}
                     </div>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground font-medium">
-                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {format(parseServerDate(ride.depart_time), "dd MMM, h:mm a")}</span>
+                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {formatDateTime(ride.depart_time, "dd MMM, h:mm a", "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")}</span>
                       <span className="flex items-center gap-1"><CarFront className="h-3 w-3" /> {ride.vehicle_plate}</span>
                       <span className="flex items-center gap-1 font-bold text-primary"><Users className="h-3 w-3" /> {ride.available_seats} left</span>
                     </div>
