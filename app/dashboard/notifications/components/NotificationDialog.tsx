@@ -35,7 +35,10 @@ export function NotificationDialog({ notification, open, onOpenChange }: Notific
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-primary/10 rounded-lg">

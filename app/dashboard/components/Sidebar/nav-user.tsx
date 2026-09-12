@@ -31,7 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { ChevronsUpDownIcon, BellIcon, LogOutIcon } from "lucide-react"
+import { ChevronsUpDownIcon, BellIcon, LogOutIcon, SettingsIcon } from "lucide-react"
 import { useNotifications } from "../../notifications/hooks/use-notifications"
 import Link from "next/link"
 
@@ -133,6 +133,12 @@ export function NavUser({
                   )}
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/settings" className="flex items-center gap-2 w-full">
+                  <SettingsIcon className="size-4" />
+                  <span>Settings</span>
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -148,7 +154,11 @@ export function NavUser({
         </DropdownMenu>
 
         <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
-          <DialogContent className="sm:max-w-md" showCloseButton={false}>
+          <DialogContent
+            className="sm:max-w-md"
+            showCloseButton={false}
+            onInteractOutside={(e) => e.preventDefault()}
+          >
             <DialogHeader>
               <DialogTitle>Log out?</DialogTitle>
               <DialogDescription>

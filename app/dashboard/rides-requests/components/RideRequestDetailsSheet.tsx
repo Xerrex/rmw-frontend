@@ -143,7 +143,11 @@ export function RideRequestDetailsSheet({ open, onOpenChange, data }: RideReques
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
+      <SheetContent
+        side="right"
+        className="w-full sm:max-w-md overflow-y-auto"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <SheetHeader>
           <div className="flex items-center gap-2">
             <Badge

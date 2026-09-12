@@ -1,62 +1,79 @@
 "use client"
 
-import { useQuery, useMutation } from "@tanstack/react-query"
-import { UserSettings } from "./types"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { apiCaller } from "@/lib/apiCaller"
+import type { Vehicle, CreateVehiclePayload, ChangePasswordPayload } from "./types"
 
-/**
- * Hook to fetch user settings
- */
-export type FetchSettingsResponse = UserSettings
+export interface UserMeResponse {
+  id: number
+  uuid: string
+  first_name: string
+  last_name: string
+  email: string
+  created_at: string
+  updated_at: string
+}
 
-export function useSettings() {
-  const fetchSettings = async (): Promise<FetchSettingsResponse> => {
-    console.log("Fetching user settings from backend...")
-    // Mocking the backend call
-    return Promise.resolve(MOCK_SETTINGS)
-  }
-
+export function useUserProfile() {
   return useQuery({
-    queryKey: ["dashboard", "settings"],
-    queryFn: fetchSettings,
+    queryKey: ["user", "me"],
+    queryFn: async () => {
+      const response = await apiCaller.get<UserMeResponse>("/user/me")
+      return response.data
+    },
+    staleTime: 1000 * 60 * 5,
   })
 }
 
-/**
- * Hook to update user settings
- */
-export type UpdateSettingsInput = Partial<UserSettings>
-export type UpdateSettingsResponse = { success: boolean; message: string }
+export function useUserVehicles() {
+  return useQuery({
+    queryKey: ["user", "vehicles"],
+    queryFn: async () => {
+      const response = await apiCaller.get<Vehicle[]>("/user/vehicles")
+      return response.data
+    },
+    staleTime: 1000 * 60 * 2,
+  })
+}
 
-export function useUpdateSettings() {
-  const updateSettings = async (data: UpdateSettingsInput): Promise<UpdateSettingsResponse> => {
-    console.log("Updating user settings with payload:", data)
-    // Mocking the backend call
-    return Promise.resolve({ success: true, message: "Settings updated successfully" })
-  }
+export function useCreateVehicle() {
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: updateSettings,
+    mutationFn: async (payload: CreateVehiclePayload) => {
+      const response = await apiCaller.post<Vehicle>("/user/vehicles", payload)
+      return response.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", "vehicles"] })
+    },
   })
 }
 
-/**
- * Mock Data
- */
-const MOCK_SETTINGS: UserSettings = {
-  profile: {
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phone: "+254 712 345 678",
-  },
-  vehicle: {
-    plateNumber: "KBA 123A",
-    model: "Toyota Fielder",
-    seats: 4,
-  },
-  notifications: {
-    email: true,
-    push: true,
-    sms: false,
-  },
+export function useDeleteVehicle() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (vehicleId: number) => {
+      const response = await apiCaller.delete<{ message: string; success: boolean }>(
+        `/user/vehicles/${vehicleId}`
+      )
+      return response.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", "vehicles"] })
+    },
+  })
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: async (payload: ChangePasswordPayload) => {
+      const response = await apiCaller.post<{ message: string; success: boolean }>(
+        "/user/change-password",
+        payload
+      )
+      return response.data
+    },
+  })
 }

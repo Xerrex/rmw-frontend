@@ -297,7 +297,7 @@ function RideList({ data, onRideClick }: { data: Ride[], onRideClick: (id: strin
                         </span>
                         <span className="flex items-center gap-1.5">
                           <CarFront className="h-3.5 w-3.5" />
-                          {ride.vehicle_model} &middot; {ride.vehicle_plate}
+                          Vehicle ID: #{ride.vehicle_id ?? "N/A"} &middot; {ride.vehicle_plate} ({ride.vehicle_model})
                         </span>
                       </div>
                     </div>
