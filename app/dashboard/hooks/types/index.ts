@@ -25,6 +25,8 @@ export interface RideRequest {
   dropOff: string
   route: string
   status: "pending" | "approved" | "rejected" | "cancelled"
+  viewerRole?: "owner" | "requester"
+  type?: "incoming" | "outgoing"
 }
 
 export interface ActivityItem {

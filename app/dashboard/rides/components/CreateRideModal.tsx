@@ -17,7 +17,7 @@ import { DateTimePicker } from "./DateTimePicker"
 import { Loader2, Plus, CarFront, MapPin, Clock } from "lucide-react"
 
 const schema = z.object({
-  vehicleId: z.coerce.number().min(1, "Please select a vehicle"),
+  vehicleUuid: z.string().min(1, "Please select a vehicle"),
   seats: z.coerce.number().min(1, "At least 1 seat required"),
   townStarting: z.string().min(1, "Starting town is required"),
   townEnding: z.string().min(1, "Destination is required"),
@@ -60,7 +60,7 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
   } = useForm<FormValues, unknown, ValidatedFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      vehicleId: undefined,
+      vehicleUuid: "",
       seats: 3,
       townStarting: "",
       townEnding: "",
@@ -69,23 +69,20 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
     },
   })
 
-  const selectedVehicleId = watch("vehicleId")
+  const selectedVehicleUuid = watch("vehicleUuid")
 
   // Auto-select first vehicle if available and none selected
   useEffect(() => {
-    if (vehicles && vehicles.length > 0 && !selectedVehicleId) {
-      setValue("vehicleId", vehicles[0].id)
+    if (vehicles && vehicles.length > 0 && !selectedVehicleUuid) {
+      setValue("vehicleUuid", vehicles[0].uuid)
       setValue("seats", vehicles[0].seats)
     }
-  }, [vehicles, selectedVehicleId, setValue])
+  }, [vehicles, selectedVehicleUuid, setValue])
 
   async function onSubmit(values: ValidatedFormValues) {
-    const selectedVeh = vehicles?.find((v) => v.id === values.vehicleId)
     try {
       await createRide({
-        vehicleId: values.vehicleId,
-        vehiclePlate: selectedVeh?.vehicle_plate,
-        vehicleModel: selectedVeh?.vehicle_model,
+        vehicleUuid: values.vehicleUuid,
         seats: values.seats,
         townStarting: values.townStarting,
         townEnding: values.townEnding,
@@ -119,7 +116,7 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
         seats: newSeats,
       })
       toast.success("Vehicle created successfully")
-      setValue("vehicleId", created.id)
+      setValue("vehicleUuid", created.uuid)
       setValue("seats", created.seats)
       setIsAddVehicleOpen(false)
       setNewPlate("")
@@ -171,15 +168,14 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
               </div>
 
               <Controller
-                name="vehicleId"
+                name="vehicleUuid"
                 control={control}
                 render={({ field }) => (
                   <Select
-                    value={field.value ? String(field.value) : ""}
+                    value={field.value || ""}
                     onValueChange={(val) => {
-                      const numVal = Number(val)
-                      field.onChange(numVal)
-                      const v = vehicles?.find((item) => item.id === numVal)
+                      field.onChange(val)
+                      const v = vehicles?.find((item) => item.uuid === val)
                       if (v) setValue("seats", v.seats)
                     }}
                   >
@@ -188,7 +184,7 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
                     </SelectTrigger>
                     <SelectContent>
                       {vehicles?.map((v) => (
-                        <SelectItem key={v.id} value={String(v.id)}>
+                        <SelectItem key={v.uuid} value={v.uuid}>
                           {v.vehicle_plate} — {v.vehicle_model} ({v.seats} seats)
                         </SelectItem>
                       ))}
@@ -196,8 +192,8 @@ export function CreateRideModal({ children }: CreateRideModalProps) {
                   </Select>
                 )}
               />
-              {errors.vehicleId && (
-                <p className="text-xs text-destructive">{errors.vehicleId.message}</p>
+              {errors.vehicleUuid && (
+                <p className="text-xs text-destructive">{errors.vehicleUuid.message}</p>
               )}
             </div>
 

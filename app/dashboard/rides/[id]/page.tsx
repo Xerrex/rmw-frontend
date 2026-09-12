@@ -13,7 +13,7 @@ import { cn, formatDateTime } from "@/lib/utils"
 import type { RideRequestDetail } from "../hooks/types"
 import { RideRequestDetailsSheet, RideRequestSheetData } from "@/app/dashboard/rides-requests/components/RideRequestDetailsSheet"
 
-function toSheetData(req: RideRequestDetail, ride: { town_starting: string; town_ending: string; vehicle_plate: string; vehicle_model: string; depart_time: string; status: string }, rideUuid: string): RideRequestSheetData {
+function toSheetData(req: RideRequestDetail, ride: { town_starting: string; town_ending: string; vehicle_plate?: string; vehicle_model?: string; depart_time: string; status: string }, rideUuid: string): RideRequestSheetData {
   return {
     rideUuid,
     requestUuid: req.uuid,
@@ -29,8 +29,8 @@ function toSheetData(req: RideRequestDetail, ride: { town_starting: string; town
     ride: {
       townStarting: ride.town_starting,
       townEnding: ride.town_ending,
-      vehiclePlate: ride.vehicle_plate,
-      vehicleModel: ride.vehicle_model,
+      vehiclePlate: ride.vehicle_plate ?? "N/A",
+      vehicleModel: ride.vehicle_model ?? "N/A",
       departTime: ride.depart_time,
       status: ride.status,
     },

@@ -8,9 +8,9 @@ export interface UserProfile {
 
 export interface Vehicle {
   id: number
-  uuid: str
-  vehicle_plate: str
-  vehicle_model: str
+  uuid: string
+  vehicle_plate: string
+  vehicle_model: string
   seats: number
   owner_id: number
   created_at: string

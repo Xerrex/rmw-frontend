@@ -28,8 +28,8 @@ const PAGE_SIZE_OPTIONS = [5, 10, 20, 50]
 function matchesRideSearch(ride: Ride, query: string) {
   const q = query.toLowerCase()
   return (
-    ride.vehicle_plate.toLowerCase().includes(q) ||
-    ride.vehicle_model.toLowerCase().includes(q) ||
+    (ride.vehicle_plate ? ride.vehicle_plate.toLowerCase().includes(q) : false) ||
+    (ride.vehicle_model ? ride.vehicle_model.toLowerCase().includes(q) : false) ||
     ride.town_starting.toLowerCase().includes(q) ||
     ride.town_ending.toLowerCase().includes(q)
   )
@@ -297,7 +297,7 @@ function RideList({ data, onRideClick }: { data: Ride[], onRideClick: (id: strin
                         </span>
                         <span className="flex items-center gap-1.5">
                           <CarFront className="h-3.5 w-3.5" />
-                          Vehicle ID: #{ride.vehicle_id ?? "N/A"} &middot; {ride.vehicle_plate} ({ride.vehicle_model})
+                          {ride.vehicle_plate ? `${ride.vehicle_plate} (${ride.vehicle_model})` : "N/A"}
                         </span>
                       </div>
                     </div>

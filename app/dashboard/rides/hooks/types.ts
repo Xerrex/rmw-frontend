@@ -6,9 +6,9 @@ export type RideStatus = "upcoming" | "completed" | "rescheduled" | "canceled"
 export interface Ride {
   id: number
   uuid: string
-  vehicle_id?: number | null
-  vehicle_plate: string
-  vehicle_model: string
+  vehicle_uuid?: string | null
+  vehicle_plate?: string
+  vehicle_model?: string
   seats: number
   town_starting: string
   town_ending: string
@@ -32,9 +32,7 @@ export interface RidesResponse{
 }
 
 export interface CreateRidePayload{
-  vehicleId?: number
-  vehiclePlate?: string
-  vehicleModel?: string
+  vehicleUuid?: string
   seats: number
   townStarting: string
   townEnding: string
