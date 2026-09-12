@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Pie, PieChart, Cell, ResponsiveContainer, Line, LineChart } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Pie, PieChart, Cell } from "recharts"
 import { useAnalytics } from "./hooks/use-analytics"
 import { CarFront, Users, CheckCircle2, TrendingUp, TrendingDown, Users2 } from "lucide-react"
 
@@ -44,11 +44,11 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div>
-        <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-extrabold tracking-tight bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
           Analytics Overview
         </h1>
         <p className="text-muted-foreground mt-1">
-          Monitor your platform's performance and growth metrics.
+          Monitor your platform&apos;s performance and growth metrics.
         </p>
       </div>
 
@@ -112,7 +112,7 @@ export default function AnalyticsPage() {
             <CardDescription>Completed vs Cancelled rides over the last 7 days.</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+            <ChartContainer config={chartConfig} className="h-75 w-full">
               <BarChart data={data.ridesOverTime}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis 
@@ -148,7 +148,7 @@ export default function AnalyticsPage() {
             <CardDescription>Breakdown of ride requests by status.</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+            <ChartContainer config={chartConfig} className="h-75 w-full">
               <PieChart>
                 <Pie
                   data={data.statusDistribution}

@@ -13,23 +13,23 @@ export function DashboardQuickActions() {
 
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
         <Button asChild className="h-10 justify-start gap-2">
-          <Link href="#">
+          <Link href="/dashboard/rides">
             <CirclePlus className="size-4" />
             Create ride
           </Link>
         </Button>
 
         <Button asChild variant="outline" className="h-10 justify-start gap-2">
-          <Link href="#">
+          <Link href="/dashboard/rides">
             <Search className="size-4" />
             Find rides
           </Link>
         </Button>
 
         <Button asChild variant="outline" className="h-10 justify-start gap-2">
-          <Link href="#">
+          <Link href="/dashboard/rides-requests">
             <UserPlus className="size-4" />
-            Invite rider
+            View requests
           </Link>
         </Button>
       </div>

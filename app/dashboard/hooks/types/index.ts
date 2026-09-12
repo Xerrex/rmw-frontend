@@ -17,6 +17,16 @@ export interface UpcomingRide {
   vehicleNumber: string
 }
 
+export interface RideRequest {
+  id: string
+  passengerName: string
+  seatsRequested: number
+  pickup: string
+  dropOff: string
+  route: string
+  status: "pending" | "approved" | "rejected" | "cancelled"
+}
+
 export interface ActivityItem {
   id: string
   summary: string
