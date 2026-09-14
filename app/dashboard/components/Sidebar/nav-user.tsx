@@ -38,6 +38,7 @@ import Link from "next/link"
 export function NavUser({
   user,
   onLogout,
+  secondaryAction,
 }: {
   user: {
     name: string
@@ -45,6 +46,11 @@ export function NavUser({
     avatar: string
   }
   onLogout: () => Promise<void> | void
+  secondaryAction?: {
+    label: string
+    href: string
+    icon: React.ReactNode
+  }
 }) {
   const { isMobile } = useSidebar()
   const { unreadCount } = useNotifications()
@@ -141,6 +147,17 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
+            {secondaryAction && (
+              <>
+                <DropdownMenuItem asChild>
+                  <Link href={secondaryAction.href} className="flex items-center gap-2 w-full">
+                    {secondaryAction.icon}
+                    <span>{secondaryAction.label}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
             <DropdownMenuItem
               onSelect={(event) => {
                 event.preventDefault()

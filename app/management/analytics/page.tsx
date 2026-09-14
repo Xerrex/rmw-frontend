@@ -24,11 +24,11 @@ export default function AnalyticsPage() {
       color: "oklch(0.5 0.134 242.749)",
     },
     cancelled: {
-      label: "Cancelled",
+      label: "Rejected",
       color: "oklch(0.704 0.191 22.216)",
     },
-    confirmed: {
-      label: "Confirmed",
+    accepted: {
+      label: "Accepted",
       color: "oklch(0.5 0.134 242.749)",
     },
     pending: {
@@ -62,7 +62,7 @@ export default function AnalyticsPage() {
           <CardContent>
             <div className="text-2xl font-bold">{data.totalRides.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <TrendingUp className="h-3 w-3 text-green-500" /> +12% from last month
+              <TrendingUp className="h-3 w-3 text-green-500" /> Across all time
             </p>
           </CardContent>
         </Card>
@@ -74,7 +74,7 @@ export default function AnalyticsPage() {
           <CardContent>
             <div className="text-2xl font-bold">{data.totalRequests.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <TrendingUp className="h-3 w-3 text-green-500" /> +25% from last month
+              <TrendingUp className="h-3 w-3 text-green-500" /> Across all time
             </p>
           </CardContent>
         </Card>
@@ -86,7 +86,7 @@ export default function AnalyticsPage() {
           <CardContent>
             <div className="text-2xl font-bold">{data.totalPassengers.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <TrendingUp className="h-3 w-3 text-green-500" /> +8% from last month
+              <TrendingUp className="h-3 w-3 text-green-500" /> Unique requesters
             </p>
           </CardContent>
         </Card>
@@ -98,7 +98,7 @@ export default function AnalyticsPage() {
           <CardContent>
             <div className="text-2xl font-bold">{data.activeDrivers.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <TrendingDown className="h-3 w-3 text-red-500" /> -2% from last month
+              <TrendingDown className="h-3 w-3 text-red-500" /> With upcoming rides
             </p>
           </CardContent>
         </Card>
@@ -109,7 +109,7 @@ export default function AnalyticsPage() {
         <Card className="border-none shadow-xl bg-card/50 backdrop-blur-md">
           <CardHeader>
             <CardTitle>Weekly Ride Activity</CardTitle>
-            <CardDescription>Completed vs Cancelled rides over the last 7 days.</CardDescription>
+            <CardDescription>Completed rides vs rejected requests over the last 7 days.</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="h-75 w-full">

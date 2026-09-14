@@ -7,7 +7,6 @@ export interface RideStat {
 export interface StatusDistribution {
   status: string
   count: number
-  fill: string
 }
 
 export interface AnalyticsData {

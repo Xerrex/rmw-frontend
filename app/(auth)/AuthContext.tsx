@@ -7,7 +7,10 @@ import { SignUpPayload, SignUpResponse, SignInPayload, SignInResponse, RefreshTo
   ResetPasswordPayload, ResetPasswordResponse, SetPasswordPayload, SetPasswordResponse} from "./types";
 import { apiCaller, noAuthApiCaller } from "@/lib/apiCaller";
 import { consumePendingReturnTo, setAccessToken, setRefreshToken, hasAccessToken, clearTokens } from "@/lib/tokenHandlers";
-import { UserData } from "./hooks/useAuthbackend";
+import { UserData, UserDetailsResponse } from "./hooks/useAuthbackend";
+
+// Roles that grant access to the management pages (analytics, user access)
+export const MANAGEMENT_ROLES = ["admin", "staff"];
 
 
 export interface AuthContextType{
@@ -20,10 +23,12 @@ export interface AuthContextType{
   resetPasswordHandler: (payload:ResetPasswordPayload) => Promise<void> | void;
   setPasswordHandler: (payload:SetPasswordPayload, onPassSet: ()=>void) => Promise<void> | void;
   isAuthenticated: boolean;
+  hasManagementAccess: boolean;
   user: {
     first_name: string
     last_name: string
     email: string
+    role: string
   } | null;
 
 }
@@ -156,8 +161,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
         setAccessToken(response.data.details.token.access_token);
         setRefreshToken();
         setIsAuthenticated(true);
-        const returnTo = consumePendingReturnTo() ?? "/dashboard"
-        router.replace(returnTo)
+
+        const returnTo = consumePendingReturnTo();
+        if (returnTo) {
+          router.replace(returnTo);
+        } else {
+          // Users with management access choose where to go; everyone else lands on the app.
+          const { data: me } = await apiCaller.get<UserDetailsResponse>("/auth/me");
+          router.replace(MANAGEMENT_ROLES.includes(me.role) ? "/select-destination" : "/dashboard");
+        }
         setRedirecting(true)
       }else{
         toast.error(`Sign in issue`,
@@ -317,7 +329,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
   const ctxValues = useMemo(()=>({
     loading, redirecting, signUpHandler, signInHandler,
     refreshAccessTokenHandler, logoutHandler, resetPasswordHandler, 
-    setPasswordHandler, isAuthenticated, user: user ?? null
+    setPasswordHandler, isAuthenticated, user: user ?? null,
+    hasManagementAccess: Boolean(user && MANAGEMENT_ROLES.includes(user.role)),
   }),[
     loading, redirecting, signUpHandler, signInHandler, 
     refreshAccessTokenHandler, logoutHandler, resetPasswordHandler, 

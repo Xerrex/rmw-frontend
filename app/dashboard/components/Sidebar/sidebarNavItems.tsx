@@ -1,5 +1,5 @@
 import { GalleryVerticalEndIcon, TerminalSquareIcon, FrameIcon, PieChartIcon, 
-  LayoutDashboard, CarFront, Users, ChartSpline, Settings} from "lucide-react";
+  LayoutDashboard, CarFront, Users, Settings} from "lucide-react";
 
 
 const SidebarNavItems = {
@@ -40,12 +40,6 @@ const SidebarNavItems = {
       title: "Requests",
       url: "/dashboard/rides-requests",
       icon: (<Users/>),
-      // isActive: true,
-    },
-    {
-      title: "Analytics",
-      url: "/dashboard/analytics",
-      icon: (<ChartSpline/>),
       // isActive: true,
     },
   ]
