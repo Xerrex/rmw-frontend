@@ -2,17 +2,17 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { LayoutDashboard, ShieldCheck } from "lucide-react"
 import { useAuthContext } from "@/app/(auth)/AuthContext"
 
 export default function SelectDestinationPage() {
   const router = useRouter()
-  const { loading, isAuthenticated, hasManagementAccess } = useAuthContext()
+  const { loading, isAuthenticated, hasManagementAccess, isUserLoading } = useAuthContext()
 
   useEffect(() => {
-    if (loading) return
+    if (loading || isUserLoading) return
     if (!isAuthenticated) {
       router.replace("/")
       return
@@ -20,32 +20,36 @@ export default function SelectDestinationPage() {
     if (!hasManagementAccess) {
       router.replace("/dashboard")
     }
-  }, [loading, isAuthenticated, hasManagementAccess, router])
+  }, [loading, isUserLoading, isAuthenticated, hasManagementAccess, router])
 
-  if (loading || !isAuthenticated || !hasManagementAccess) {
-    return null
+  if (loading || isUserLoading || !isAuthenticated || !hasManagementAccess) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Where would you like to go?</CardTitle>
-          <CardDescription>
+    <Dialog open modal>
+      <DialogContent showCloseButton={false} onInteractOutside={(e) => e.preventDefault()}>
+        <DialogHeader>
+          <DialogTitle>Where would you like to go?</DialogTitle>
+          <DialogDescription>
             Your account has access to the management pages. Choose where to continue.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          <Button size="lg" className="justify-start gap-2" onClick={() => router.push("/dashboard")}>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter className="flex-col gap-2 sm:flex-col">
+          <Button size="lg" className="justify-start gap-2 w-full" onClick={() => router.push("/dashboard")}>
             <LayoutDashboard className="size-4" />
             Go to the App
           </Button>
-          <Button size="lg" variant="secondary" className="justify-start gap-2" onClick={() => router.push("/management")}>
+          <Button size="lg" variant="secondary" className="justify-start gap-2 w-full" onClick={() => router.push("/management")}>
             <ShieldCheck className="size-4" />
             Go to Management
           </Button>
-        </CardContent>
-      </Card>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

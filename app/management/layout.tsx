@@ -9,10 +9,10 @@ import { useAuthContext } from "@/app/(auth)/AuthContext";
 
 export default function ManagementLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const router = useRouter()
-  const { loading, isAuthenticated, hasManagementAccess } = useAuthContext()
+  const { loading, isAuthenticated, hasManagementAccess, isUserLoading } = useAuthContext()
 
   useEffect(() => {
-    if (loading) return
+    if (loading || isUserLoading) return
     if (!isAuthenticated) {
       router.replace("/")
       return
@@ -20,10 +20,14 @@ export default function ManagementLayout({ children }: Readonly<{ children: Reac
     if (!hasManagementAccess) {
       router.replace("/dashboard")
     }
-  }, [loading, isAuthenticated, hasManagementAccess, router])
+  }, [loading, isUserLoading, isAuthenticated, hasManagementAccess, router])
 
-  if (loading || !isAuthenticated || !hasManagementAccess) {
-    return null
+  if (loading || isUserLoading || !isAuthenticated || !hasManagementAccess) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
   }
 
   return (

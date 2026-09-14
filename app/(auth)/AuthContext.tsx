@@ -24,6 +24,7 @@ export interface AuthContextType{
   setPasswordHandler: (payload:SetPasswordPayload, onPassSet: ()=>void) => Promise<void> | void;
   isAuthenticated: boolean;
   hasManagementAccess: boolean;
+  isUserLoading: boolean;
   user: {
     first_name: string
     last_name: string
@@ -90,7 +91,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
     };
   }, []);
 
-  const { details: user } = UserData(isAuthenticated);
+  const { details: user, isLoadingUser, isErrorUser } = UserData(isAuthenticated);
+  // Still resolving the user's role: authenticated but the profile fetch hasn't settled yet.
+  const isUserLoading = isAuthenticated && !user && !isErrorUser && isLoadingUser;
 
   const signUpHandler = useCallback(async(payload: SignUpPayload, onSignUp:() => void )=>{
     setLoading(true);
@@ -331,10 +334,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }){
     refreshAccessTokenHandler, logoutHandler, resetPasswordHandler, 
     setPasswordHandler, isAuthenticated, user: user ?? null,
     hasManagementAccess: Boolean(user && MANAGEMENT_ROLES.includes(user.role)),
+    isUserLoading,
   }),[
     loading, redirecting, signUpHandler, signInHandler, 
     refreshAccessTokenHandler, logoutHandler, resetPasswordHandler, 
-    setPasswordHandler, isAuthenticated, user
+    setPasswordHandler, isAuthenticated, user, isUserLoading
   ])
 
   return (
