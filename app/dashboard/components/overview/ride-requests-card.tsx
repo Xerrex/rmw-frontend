@@ -1,0 +1,100 @@
+"use client"
+
+import Link from "next/link"
+import { ArrowUpRight, ArrowDownLeft } from "lucide-react"
+import { useRideRequests } from "@/app/dashboard/hooks/use-ride-requests"
+
+const statusStyles = {
+  pending: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+  approved: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+  rejected: "bg-rose-500/15 text-rose-700 dark:text-rose-300",
+  cancelled: "bg-muted text-muted-foreground",
+} as const
+
+export function RideRequestsCard() {
+  const { data, isLoading } = useRideRequests()
+
+  return (
+    <section className="rounded-xl border border-border bg-card p-4 shadow-sm sm:p-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-base font-semibold">Ride requests</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Track and review requests for your rides and requests you have sent.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/rides-requests"
+          className="text-xs font-medium text-primary hover:underline shrink-0"
+        >
+          View all
+        </Link>
+      </div>
+
+      <div className="mt-4 space-y-3">
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="h-20 animate-pulse rounded-lg border border-border bg-muted/40" />
+          ))
+        ) : !data || data.length === 0 ? (
+          <p className="py-6 text-center text-xs text-muted-foreground">
+            No ride requests found.
+          </p>
+        ) : (
+          data.map((request) => {
+            const isIncoming = request.type === "incoming" || request.viewerRole === "owner"
+
+            return (
+              <article
+                key={request.id}
+                className="rounded-lg border border-border bg-background p-3"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                          isIncoming
+                            ? "bg-blue-500/15 text-blue-700 dark:text-blue-300"
+                            : "bg-purple-500/15 text-purple-700 dark:text-purple-300"
+                        }`}
+                      >
+                        {isIncoming ? (
+                          <>
+                            <ArrowDownLeft className="h-3 w-3" />
+                            Incoming
+                          </>
+                        ) : (
+                          <>
+                            <ArrowUpRight className="h-3 w-3" />
+                            Sent by you
+                          </>
+                        )}
+                      </span>
+                      <p className="text-sm font-semibold">
+                        {isIncoming ? request.passengerName : "You"}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {request.route} • {request.seatsRequested} seat(s)
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Pickup: {request.pickup} • Drop-off: {request.dropOff}
+                    </p>
+                  </div>
+                  <span
+                    className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${
+                      statusStyles[request.status as keyof typeof statusStyles] ?? "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {request.status}
+                  </span>
+                </div>
+              </article>
+            )
+          })
+        )}
+      </div>
+    </section>
+  )
+}
